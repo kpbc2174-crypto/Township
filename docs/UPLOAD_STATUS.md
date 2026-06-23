@@ -1,0 +1,1 @@
+Repository population is in progress from the unpacked Township v1.0.84 source archive. This file is temporary status documentation and will be replaced by the completed source commit record.
