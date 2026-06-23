@@ -1,0 +1,31 @@
+name: Import Township v1.0.84 source
+
+on:
+  push:
+    paths:
+      - 'import/Township_v1_0_84_SOURCE_MIN.zip.b64.part*'
+      - 'import/READY'
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import source archive when ready
+        run: |
+          test -f import/READY || exit 0
+          cat import/Township_v1_0_84_SOURCE_MIN.zip.b64.part* > /tmp/Township_v1_0_84_SOURCE_MIN.zip.b64
+          base64 --decode /tmp/Township_v1_0_84_SOURCE_MIN.zip.b64 > /tmp/Township_v1_0_84_SOURCE_MIN.zip
+          unzip -o /tmp/Township_v1_0_84_SOURCE_MIN.zip -d .
+          rm -rf import
+          rm -f docs/UPLOAD_STATUS.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "Township BP" "Township RP" docs .github README.md
+          git add -u
+          git diff --cached --quiet || git commit -m "Import Township v1.0.84 source tree"
+          git push
