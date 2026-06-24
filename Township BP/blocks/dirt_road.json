@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:block": {
+    "description": {
+      "identifier": "township:dirt_road",
+      "menu_category": {
+        "category": "construction",
+        "group": "minecraft:itemGroup.name.stone"
+      }
+    },
+    "components": {
+      "minecraft:display_name": "tile.township:dirt_road.name",
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "township_dirt_road",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:map_color": "#6B4F2A",
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.7
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 2.0
+      }
+    }
+  }
+}

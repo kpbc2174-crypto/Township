@@ -1,0 +1,25 @@
+Township v1.0.50
+
+Stability correction after v1.0.49 testing.
+
+Kept:
+- Same fixed UUID update workflow.
+- Command-based /tickingarea add circle system from v1.0.48/v1.0.49.
+- Township radius 192.
+- Inner fence radius 96.
+- Lot marker height and ground-level rules.
+- Existing building templates.
+
+Fixed:
+- Initial township prep now actually starts with the full-township support-fill phase. v1.0.49 had the support phase defined but the queued prep job still started at inner clear/level, so the outer support fill was effectively skipped.
+- New sections now reset back to support-fill first, then inner clear, inner level, and inner fence/gate roads.
+- Support-fill work rate reduced so Android has less per-tick load.
+- Auto Place Lots now places at most one lot per automation run. This avoids the crash caused by heavy candidate scoring for multiple lot sizes in one burst.
+- Auto-placement candidate checks are capped per search.
+- Auto-facing still prefers nearby roads, but road scanning is shorter/lighter.
+
+Expected result:
+- Founding setup should fill support under the full township area first, without flattening outer hills.
+- Inner town should still flatten/fence normally.
+- Auto Place Lots should no longer crash immediately when turned on.
+- Lots should still favor inner/clustered placement and face nearby roads when possible.

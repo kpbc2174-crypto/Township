@@ -1,0 +1,30 @@
+Township CHANGELOG v1.0.28
+
+Update identity / phone import rule:
+- Same fixed BP/RP/module UUID workflow retained from v1.0.25+.
+- Only manifest/module/dependency versions were bumped to 1.0.28.
+- Namespace and block IDs remain stable.
+
+Bug fixes and changes:
+- Fixed lot/house ground behavior: house clearing now starts above the lot floor so it should not dig a dip under/around new buildings.
+- Lot prep now uses dirt for the ground layers instead of coarse dirt so grass can eventually spread.
+- Lot prep now places extra dirt layers under the lot to fill shallow holes/water edges more reliably.
+- House paths and porches are now offset to the side of the centered Lot Marker.
+- House door placement now follows that offset path where possible.
+- Lot fence boundaries are restored after building construction so side fencing should not disappear when a house is built.
+- Road start point now uses the offset side entrance rather than the center marker line.
+- Ground Leveler top fill now uses dirt instead of coarse dirt.
+
+Township founding area:
+- Placing a Township Founding Stone now queues a township area preparation job.
+- The township prep job clears and levels a large starting work area around the Founding Stone.
+- The top fill layer is dirt, not coarse dirt.
+- The township prep job marks the usable build boundary with oak fence and periodic torches so the player can see the current township limit.
+- The full 192-block claim is still reserved, but the initial prep work focuses on a practical large starting work area to avoid destroying an extreme area all at once.
+
+Known items to test:
+- Check if houses now sit on filled ground instead of over dips.
+- Check whether side fencing remains after houses build.
+- Check whether the offset path feels better with the Lot Marker still centered.
+- Check whether the township boundary fence/torch marker is useful or too heavy visually.
+- Check whether any roof variant still fails to complete.

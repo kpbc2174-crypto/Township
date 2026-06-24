@@ -1,0 +1,29 @@
+Township v1.0.46
+
+Purpose:
+Fix the actual chunk-loading/ticking-area problem instead of adding player-proximity workarounds.
+
+Changed:
+- Version bumped to 1.0.46.
+- Same fixed UUID update workflow retained.
+- Setup and active work jobs now request their ticking area and wait for the command to resolve before starting block placement.
+- Added an additional delay after ticking-area creation before work begins.
+- Added a writeability check before proceeding.
+- A setup section will not clear, level, or fence until its work area passes the loaded/writable check.
+- Starter/main lot will not start placing blocks until its work area passes the loaded/writable check.
+- Lot prep, building, and road jobs also wait for their active work area to pass the loaded/writable check.
+- Progress spam should be reduced because jobs no longer keep trying to place blocks before the work zone is confirmed ready.
+
+Unchanged:
+- Township radius remains 192.
+- Inner fence radius remains 96.
+- Lot marker height rules unchanged.
+- Ground-level rules unchanged.
+- Building templates unchanged.
+- Auto-place limits unchanged.
+
+Test:
+- Place a fresh Founding Stone.
+- Watch whether setup waits briefly before each section and then reaches the inner fence without needing you to stand beside that section.
+- Check whether starter camp progress starts normally instead of repeating 0/2637 while unloaded.
+- Place lots and confirm prep/build/road jobs wait for the work zone and still complete.

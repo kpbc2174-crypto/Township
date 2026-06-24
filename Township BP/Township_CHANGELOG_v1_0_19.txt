@@ -1,0 +1,22 @@
+Township Changelog v1.0.19
+
+Stable base: v1.0.18.
+
+Changes in v1.0.19:
+- Fresh UUIDs for clean Android import.
+- Added real oak door placement to the Small House.
+- Added real red bed placement to the Small House.
+- Door and bed use Bedrock block states through BlockPermutation.resolve.
+- Removed the wool bedroll placeholder from the house build plan.
+- Chest/crafting table placement adjusted so it does not collide with the new bed.
+- Kept directional Founding Stone orientation.
+- Kept front-center Lot Marker lots.
+- Kept lot prep, house build, skip-if-correct blocks, and Android crouch status.
+
+Testing notes:
+- Place a Township Founding Stone.
+- Let the starter camp complete.
+- Place a Township Lot Marker.
+- Let the builder prepare the lot and build the Small House.
+- Check that the house has an actual oak door and actual red bed.
+- If the door or bed appears rotated wrong, report the direction you placed the Lot Marker facing.

@@ -1,0 +1,35 @@
+Township v1.0.40
+
+Update method:
+- Same fixed Township BP/RP/module UUID identity retained.
+- Version bumped to 1.0.40 only.
+- No claim radius change.
+- No build radius change.
+- No lot marker placement rule change.
+- No ground-level rule change.
+- No boundary radius change.
+
+Added automation:
+- Added Auto Place Lots toggle to the Township Founding Stone UI.
+- Auto Place Lots is OFF by default.
+- When turned ON, the township automatically places new lot markers and queues their normal prep/build/road workflow.
+- Auto placement tests all three lot sizes in the same automation pass: large, medium, and small.
+- Test limits are larger:
+  - Small Lots: 12
+  - Medium Lots: 8
+  - Large Lots: 5
+- Auto placement waits until township prep is complete and the starter/main lot is complete.
+- Auto placement respects existing lot overlap rules and town-center spacing.
+- Auto placement uses the existing lot-prep, auto-build, and auto-road systems.
+
+UI changes:
+- Founding Stone UI now shows Auto Place Lots status.
+- Founding Stone status now shows auto lot limits.
+
+Testing notes:
+1. Place a fresh Township Founding Stone.
+2. Wait for quadrant prep, boundary, and starter/main lot completion.
+3. Open the Founding Stone UI.
+4. Turn Auto Place Lots ON.
+5. Confirm it places small, medium, and large lot markers automatically.
+6. Confirm lots do not overlap and then proceed through prep/build/road normally.

@@ -1,0 +1,96 @@
+Township Add-On Change Log
+
+Project Name: Township
+Namespace: township
+
+Design Direction
+- The add-on is now named Township.
+- The main founding block is named Township Founding Stone.
+- All player-facing Township blocks should start with "Township" for easier creative-menu searching.
+- Townships use a reserved territory system: a full claim is reserved immediately, while usable build radius can grow later by tier.
+- Townships cannot overlap. Current planned full claim radius is 96 blocks, meaning new Township Founding Stones should be rejected if another active township center is within 192 blocks.
+- Central block is not called Township Core in-game. Use Township Founding Stone.
+
+Long-Term Systems Planned
+- Township Founding Stone creates and manages a township.
+- Township Builder arrives after a delay if the town has no builder.
+- Builders visually construct buildings block-by-block while scripts place blocks.
+- Township lots/parcels will use Township Signposts.
+- Lot sizes are planned as Small 11x11, Medium 15x15, Large 21x21, and Special for central/plaza/wall/gate structures.
+- Roads will use special Township Road blocks and can upgrade.
+- Auto Roads controls creation of new roads.
+- Auto Upgrade controls upgrading existing buildings and roads.
+- Roads bordering a lot should upgrade to match the highest nearby lot level when Auto Upgrade is on.
+- Township storage is hidden script data, not directly visible to the player.
+- Township Donation Crate is the planned player-facing intake for town supplies.
+- Storage buildings are visual/villager access points, not the player-visible town inventory.
+- Villager wealth should be tied to individual assigned villagers.
+- If a villager dies, their personal money/reputation resets or is lost, while the building remains.
+- Villager equipment/tool upgrades should be limited by assigned lot level.
+- Builders are not directly limited by a raw number; builder capacity is controlled by Builder House-type buildings.
+
+v1.0.1
+- First prototype package created.
+- Added Behavior Pack and Resource Pack.
+- Added pack icons.
+- Added Township Founding Stone concept.
+- Added scripted township registration logic.
+- Added no-overlap township rule.
+- Added delayed builder arrival concept.
+- Builder is a persistent vanilla villager named Township Builder for the first test.
+- Added Debug Log Reader bridge hook using scriptevent debuglog:error.
+
+Known issues found in v1.0.1
+- Township Founding Stone did not appear in creative search.
+- Behavior Pack and Resource Pack did not activate together automatically.
+- BP/RP dependency linking was incomplete.
+- Block custom component attachment needed correction.
+
+v1.0.2
+- Fixed BP/RP linking by adding reverse dependency.
+- Corrected custom block component attachment to use minecraft:custom_components.
+- Added creative item catalog entry so the block should appear in creative search under Township / Founding.
+- Kept the same first-test goal: place Township Founding Stone, create township, prevent overlap, spawn Township Builder after delay.
+
+Current test target
+- Import Township_v1_0_2.mcaddon.
+- Activate the pack and verify BP/RP link together.
+- Search creative inventory for Township or Founding.
+- Place Township Founding Stone.
+- Confirm it creates a township.
+- Wait for Township Builder arrival.
+- Try placing a second Township Founding Stone within 192 blocks and confirm it is rejected.
+
+Next planned version
+v1.0.3
+- Fix any remaining import, creative visibility, dependency, or content-log errors from v1.0.2.
+- Do not add new systems until the Founding Stone and builder lifecycle works reliably.
+
+Township v1.0.3
+- Debug/lifecycle fix build.
+- Added startup/player spawn script-loaded messages so script execution can be verified in-game.
+- Removed reliance on block custom component callbacks for founding logic.
+- Added global world.afterEvents.playerPlaceBlock handling for Township Founding Stone placement.
+- Added global playerBreakBlock cleanup path for Founding Stone removal.
+- Added in-memory fallback if dynamic property storage fails.
+- Changed @minecraft/server dependency to 1.17.0 to avoid possible module-version loading failure on current non-beta Bedrock.
+- Kept BP/RP linking from v1.0.2.
+
+
+Township v1.0.4
+- Stable base: v1.0.3 was confirmed working in-game.
+- Added first starter camp construction job after Township Builder arrival.
+- Builder now queues a starter camp once spawned.
+- Starter camp places simple vanilla blocks one at a time around the Township Founding Stone.
+- Starter camp currently uses coarse dirt, campfire, chest, crafting table, torches, oak logs, and oak planks.
+- Camp construction is intentionally simple and may overwrite blocks in the small build area for this prototype.
+- No roads, lots, storage, economy, or custom builder model added yet.
+
+Current test target for v1.0.4
+- Import Township_v1_0_4.mcaddon.
+- Confirm BP/RP link together.
+- Confirm Township script loaded message.
+- Place Township Founding Stone.
+- Confirm builder arrives after delay.
+- Confirm starter camp builds one block at a time.
+- Confirm nearby second Founding Stone is rejected.

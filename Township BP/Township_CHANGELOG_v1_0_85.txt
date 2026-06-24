@@ -1,0 +1,24 @@
+Township CHANGELOG v1.0.85
+
+Purpose:
+- Script API 2.0.0 migration test only.
+
+Source base:
+- Built from v1.0.84, the confirmed working recovery checkpoint.
+
+Changed:
+- Bumped BP/RP versions to 1.0.85.
+- Updated BP script dependencies to @minecraft/server 2.0.0 and @minecraft/server-ui 2.0.0.
+- Updated main.js VERSION constant to 1.0.85.
+
+Not changed:
+- No direct-click UI added in this build.
+- No block JSON changes.
+- No texture changes.
+- No chunk-loading rewrite.
+- No terrain-prep redesign.
+- No saved-building logic.
+- No UUID changes.
+
+Test goal:
+- Confirm whether the existing v1.0.84 township systems load and run under Script API 2.0.0 before adding click UI or more features.

@@ -1,0 +1,36 @@
+{
+  "resource_pack_name": "Township RP",
+  "texture_name": "atlas.terrain",
+  "texture_data": {
+    "township_founding_stone": {
+      "textures": "textures/blocks/township_founding_stone"
+    },
+    "township_lot_marker": {
+      "textures": "textures/blocks/township_lot_marker"
+    },
+    "township_dirt_road": {
+      "textures": "textures/blocks/township_dirt_road"
+    },
+    "township_ground_leveler": {
+      "textures": "textures/blocks/township_ground_leveler"
+    },
+    "township_medium_lot_marker": {
+      "textures": "textures/blocks/township_medium_lot_marker"
+    },
+    "township_large_lot_marker": {
+      "textures": "textures/blocks/township_large_lot_marker"
+    },
+    "township_build_recorder": {
+      "textures": "textures/blocks/township_build_recorder"
+    },
+    "township_small_build_lot": {
+      "textures": "textures/blocks/township_small_build_lot"
+    },
+    "township_medium_build_lot": {
+      "textures": "textures/blocks/township_medium_build_lot"
+    },
+    "township_large_build_lot": {
+      "textures": "textures/blocks/township_large_build_lot"
+    }
+  }
+}

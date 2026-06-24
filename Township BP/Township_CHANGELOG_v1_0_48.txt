@@ -1,0 +1,29 @@
+Township v1.0.48
+
+Purpose:
+- Replace the failing v1.0.46/v1.0.47 ticking-area writable path with a command-based circle ticking-area diagnostic path.
+
+Changed:
+- Version bumped to 1.0.48 only.
+- Same BP/RP UUID update workflow retained.
+- Setup sections now create a simple command ticking area using:
+  /tickingarea add circle <section center> <y> <section center z> 4 township_temp true
+- The previous temporary township ticking area is removed before each new section load attempt.
+- The add-on now runs a ticking-area list command after add so the command result can be captured for diagnostics.
+- Writable probing now checks only one safe center point instead of multiple points.
+- Probe failure output now includes add/list/probe details instead of only saying the area is not writable.
+- Starter camp, active lot prep, building, and road jobs now use command circle ticking areas instead of large rectangle ticking areas.
+
+Unchanged:
+- Township radius remains 192.
+- Inner fence radius remains 96.
+- Lot marker height is unchanged.
+- Ground-level rules are unchanged.
+- Building templates are unchanged.
+- Auto-place limits are unchanged.
+
+Test:
+- Place a fresh Founding Stone.
+- Watch section 1/16.
+- If ticking areas work, it should move past the writable check and build normally.
+- If it fails, the chat/debug output should now identify whether add/list/probe is failing.

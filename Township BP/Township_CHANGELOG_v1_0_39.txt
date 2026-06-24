@@ -1,0 +1,33 @@
+Township v1.0.39
+
+Update method:
+- Same fixed BP/RP/module UUID identity as the previous fixed-UUID builds.
+- Version bumped to 1.0.39 only.
+- No claim radius, build radius, lot marker placement, ground-level, or boundary radius change in this build.
+
+Added Founding Stone UI:
+- Tap/use or crouch near the Township Founding Stone to open an Android-friendly menu.
+- The menu shows township status and basic automation controls.
+
+Added automation settings:
+- Auto Build Lots toggle.
+  - ON: prepared empty lots automatically queue a random building.
+  - OFF: lots prepare and stay ready/empty.
+- Auto Roads toggle.
+  - ON: completed buildings queue road connections.
+  - OFF: completed buildings do not automatically queue roads.
+- Pause/Resume Builder toggle.
+  - Pauses normal builder work without changing township records.
+  - Town prep still remains separate.
+
+Added manual recovery/actions:
+- Rebuild Outer Boundary.
+  - Queues a boundary-only rebuild without clearing or leveling terrain.
+- Clear Stuck Queue.
+  - Clears non-town-prep queued jobs as a recovery tool.
+- Show Status in Chat.
+
+Kept:
+- v1.0.38 quadrant township setup.
+- v1.0.36 ground-level rules.
+- Township Build Recorder remains included.

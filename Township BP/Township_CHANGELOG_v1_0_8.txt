@@ -1,0 +1,27 @@
+Township Changelog v1.0.8
+
+Stable base
+- v1.0.7 remains the previous stable checkpoint.
+- Kept the working Android crouch-near-Founding-Stone status method.
+- Kept the working BP/RP linking, Founding Stone placement, no-overlap rule, builder arrival, and starter camp construction flow.
+
+Changes in v1.0.8
+- Added clearer starter camp job phases:
+  - clear_lot
+  - level_lot
+  - build_camp
+  - complete
+- Status output now includes the current starter camp phase when available.
+- Added block-skip logic: if a build location already has the correct block type, the builder skips that placement instead of replacing it again.
+- Made the starter camp slightly larger:
+  - Expanded the prepared camp area from 5x5 to 7x7.
+  - Expanded the shelter frame and roof.
+  - Added more torches and adjusted props.
+- Kept the Founding Stone protected during clearing/building.
+- Added a simple builder-near-town helper. During starter camp construction, if the builder wanders too far from the town center, the script tries to return him near the Founding Stone.
+- Reduced camp build interval so the larger camp does not take excessively long to complete.
+
+Known issues / later work
+- The Township Builder is still a vanilla villager and may wander when not actively corrected during construction.
+- Block-skip logic currently compares block type IDs only. Blocks with important states/facing may need full permutation comparison later.
+- The starter camp is still a prototype structure, not the final town center design.

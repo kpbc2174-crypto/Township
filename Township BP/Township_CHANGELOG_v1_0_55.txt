@@ -1,0 +1,16 @@
+Township v1.0.55
+
+Changed:
+- Fixed clickable UI wiring for Township interactive blocks.
+- Moved custom block component registration to system.beforeEvents.startup.
+- All component interactions now defer UI opening through system.run.
+- Added shared UI routing for Founding Stone, Lot Markers, Build Lots, Build Recorder, and Ground Leveler.
+- Added basic Lot Marker UI instead of only chat status.
+- Added basic Ground Leveler UI with Run Leveler Again and Show Info.
+- Updated item-use and global interaction fallbacks to use the same UI routing.
+
+Kept:
+- v1.0.54 recorder export behavior.
+- Recorder natural block filtering.
+- Recorder textures.
+- Township generation, road, queue, and radius logic unchanged.

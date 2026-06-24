@@ -1,0 +1,19 @@
+Township Changelog v1.0.10
+
+v1.0.10
+- Re-exported Township with fresh BP/RP/module UUIDs so Android Bedrock can import this version without the Duplicate Pack Detected error.
+- Kept player-facing pack names as Township BP and Township RP.
+- Kept in-game identifiers stable, including township:founding_stone, so world testing remains consistent.
+- Preserved the v1.0.8/v1.0.9 starter camp lifecycle: clear lot, level lot, build camp, mark complete.
+- Preserved skip-if-correct-block behavior, including skipping air targets that are already air.
+- Preserved the larger, cleaner starter camp test layout.
+- Preserved Android crouch-near-Founding-Stone status display.
+- Preserved builder nudge-back during camp construction.
+
+Current stable checkpoint before this build:
+- v1.0.7 confirmed working for Founding Stone, script load, builder arrival, starter camp build, no-overlap rule, and Android status display.
+
+Known issues / later work:
+- Builder is still a vanilla villager and can wander when not being nudged.
+- Starter camp is still only a temporary proof-of-concept structure.
+- Proper lot/signpost/road/storage/economy systems are not implemented yet.

@@ -1,0 +1,16 @@
+Township CHANGELOG v1.0.7
+
+Stable base carried forward:
+- v1.0.4 starter camp construction remains the current working camp prototype.
+- v1.0.6 lot-prep clearing/leveling remains in place.
+
+v1.0.7 changes:
+- Fixed starter camp layout collision where the campfire was placed at the same coordinate as a shelter corner log.
+- Moved campfire to a non-corner position inside the starter camp.
+- Added Android-friendly status access fallback: crouch/sneak next to the Township Founding Stone to show township status.
+- Added item-use fallback: hold any item and tap/use it on the Township Founding Stone to show township status if the platform fires itemUseOn.
+- Kept the custom block interaction path and global block interaction path as additional fallbacks.
+
+Known notes:
+- Direct empty-hand interaction with the Founding Stone may not fire consistently on Android. For now, use crouch/sneak next to the Founding Stone as the easy status method.
+- Builder still wanders like a normal villager. This is tracked for a later builder-control pass.

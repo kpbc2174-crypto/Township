@@ -1,0 +1,32 @@
+Township Changelog v1.0.6
+
+Stable base carried forward:
+- v1.0.3 confirmed stable for pack linking, script loading, town registration, builder arrival, and no-overlap checks.
+- v1.0.4 confirmed stable for starter camp block-by-block construction.
+- v1.0.5 kept lifecycle behavior working, but Founding Stone interaction did not fire in-game.
+
+v1.0.6 changes:
+- Added proper custom block component registration for Township Founding Stone interaction.
+- Added minecraft:custom_components to the Founding Stone block JSON.
+- Kept the global playerInteractWithBlock event as a fallback.
+- Added starter lot preparation before camp construction.
+- The starter build now clears a small 5x5 area above the build site before placing camp blocks.
+- The starter build levels the 5x5 floor with coarse dirt before placing camp props and shelter frame.
+- Updated pack version to 1.0.6.
+
+Known limitations:
+- Township Builder still uses a vanilla villager and may wander.
+- Starter lot preparation is intentionally small and rough.
+- No signposts, roads, donation crate, hidden storage, villager economy, or real lot system yet.
+
+Test checklist:
+1. Import Township_v1_0_6.mcaddon.
+2. Confirm BP/RP link together.
+3. Confirm script loaded message appears.
+4. Place Township Founding Stone.
+5. Confirm founded message.
+6. Wait for Township Builder.
+7. Confirm starter camp clears/levels and builds one block at a time.
+8. Interact with the Township Founding Stone.
+9. Confirm Township Status output appears.
+10. Place another Founding Stone nearby and confirm it is rejected.

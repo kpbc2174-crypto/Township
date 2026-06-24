@@ -1,0 +1,33 @@
+Township v1.0.34 Changelog
+
+Update workflow
+- Fixed UUID update workflow retained.
+- BP/RP/module UUIDs unchanged from the stable Township identity.
+- Manifest/module/dependency versions bumped to 1.0.34 only.
+
+Lot and building ground fixes
+- Lot prep no longer clears the lot surface layer before leveling.
+- Lot prep now fills normal dirt up to the marker placement level, not one block too low.
+- Building plans now use the corrected lot surface level so houses should sit on the prepared lot instead of above a dip.
+- Lot boundary fences are placed on top of the new surface layer instead of replacing the ground.
+- House floor repair now restores the entire lot surface before the building is placed.
+
+Township founding area
+- Visible township prep boundary radius re-expanded from 32 to 64 for this test build.
+- Founding area prep radius re-expanded to 64.
+- Clear height remains limited at 16 blocks above and 2 blocks below the founding level to avoid the previous oversized clearing queue.
+- Normal dirt remains the top fill block so grass can regrow.
+
+Ground Leveler
+- Township Ground Leveler now removes/breaks itself when its job completes.
+
+Farm/building cleanup
+- Farm buildings now place the farm patch outside/in the yard area instead of as a cramped strip inside the house or under furniture.
+- Farm patches include farmland, wheat, water, and a composter as the temporary farmer job block.
+- Beds were moved deeper against rear/side walls so they should no longer block the doorway.
+- Build speed increased for lot and building work to help catch incomplete structures during testing.
+
+Still tracking
+- Preset buildings still need a proper design pass.
+- Township Build Recorder remains included but was not the focus of this build.
+- Outer boundary at larger radius may still depend on loaded/simulated chunks; test from near the Founding Stone first.

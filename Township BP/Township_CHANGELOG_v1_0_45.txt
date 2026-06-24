@@ -1,0 +1,25 @@
+Township v1.0.45
+
+Focus: inner-town setup coverage and loading reliability.
+
+Changed:
+- Same fixed UUID update workflow.
+- Version bumped to 1.0.45 only.
+- No township radius change.
+- No inner fence radius change.
+- No lot marker height change.
+- No ground-level rule change.
+- No building-template change.
+
+Fixes:
+- Town setup ticking area now loads each active section plus a 24-block buffer.
+- Setup still modifies only the actual section bounds, but the extra loaded area should prevent edge rows from being skipped.
+- Town setup waits longer after adding the ticking area before placing blocks.
+- Town setup work per tick was reduced so Bedrock has more time to keep section chunks ready instead of trying to push an entire section at once.
+- Leveling and inner fence still use the same inner-town radius.
+
+Test:
+- Place a fresh Founding Stone.
+- Confirm inner-town leveling reaches the inner fence more consistently.
+- Check whether skipped setup block count drops.
+- Confirm lots still complete and paths stop flickering.

@@ -1,0 +1,31 @@
+Township v1.0.54
+
+Recorder-only update.
+
+Changed:
+- Build Lot export now prints to normal Minecraft chat in chunks.
+- Every export chunk now includes the build name, lot size, and chunk number/total.
+- Debug Log Reader export chunks also include the build name and chunk number.
+- Added Include Natural Blocks toggle to Build Lot settings.
+- Natural Blocks default to Ignore.
+- Default capture now skips common terrain blocks: stone, dirt, grass_block, deepslate, tuff, gravel, sand, sandstone, andesite, diorite, granite, water, and lava.
+- Capture metadata records whether natural blocks were included.
+- Build Lot info now shows Natural Blocks: Include/Ignore.
+- Build Lot block textures now differ from normal lot markers:
+  - Small Build Lot: one circle.
+  - Medium Build Lot: center circle plus outer circle.
+  - Large Build Lot: three nested circles.
+
+Kept unchanged:
+- Township radius.
+- Command-based ticking areas.
+- Road/queue logic.
+- Town automation.
+- Normal lot markers.
+- Building templates.
+
+Test:
+- Place each Build Lot size and confirm the marker texture is visually different.
+- Open Build Lot settings and confirm Include Natural Blocks appears.
+- Save and export a small test build.
+- Confirm each chat chunk shows the build name and chunk number.

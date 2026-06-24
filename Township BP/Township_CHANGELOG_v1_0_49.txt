@@ -1,0 +1,37 @@
+Township v1.0.49
+
+Update workflow:
+- Same fixed BP/RP/module UUIDs retained.
+- Version bumped to 1.0.49 only.
+
+Kept from v1.0.48:
+- Command-based /tickingarea circle loading.
+- Township radius 192.
+- Inner fence radius 96.
+- Lot marker height and ground-level rules unchanged.
+- Building templates unchanged.
+
+Added full-township support fill:
+- Initial founding setup now support-fills the full township radius out to 192.
+- This is not outer-area flattening.
+- Outer hills and raised terrain are not cut down.
+- Air/water gaps below the township surface are filled with dirt so outer lots are not hovering over open space.
+- Inner town still gets the normal clear/level/fence/gate-road setup inside radius 96.
+
+Auto placement changes:
+- Auto Place Lots now scores candidate positions instead of taking the first valid spot.
+- Normal auto lots strongly favor the inner fenced town first.
+- Auto lots prefer clustering near existing lots instead of scattering to the far edge.
+- Wall-upgrade reserve around the inner fence remains protected.
+
+Auto-facing changes:
+- Auto-placed lots now test all four facings.
+- If a nearby Township Dirt Road exists, the lot should face the road.
+- If no road is nearby, the lot falls back to facing toward the town center.
+
+Test notes:
+- Place a fresh Founding Stone.
+- Confirm setup still completes with the command ticking-area loading.
+- Check that outer open/water areas get dirt support underneath but are not flattened.
+- Turn Auto Place Lots on and confirm new lots prefer the inner area and cluster near existing lots/roads.
+- Check that auto-placed buildings face nearby roads when possible.

@@ -1,0 +1,28 @@
+Township CHANGELOG v1.0.15
+
+Stable base: v1.0.14
+
+Changes in v1.0.15:
+- Added the first real building cycle for prepared Township Lot Marker lots.
+- After a Lot Marker is accepted and prepared, the Township Builder automatically queues a Small House build.
+- Small House build phases added: clear_house and build_small_house.
+- Small House is built block by block on the rear side of the 11x11 lot, leaving the Lot Marker as a front-yard control post.
+- Lot status now advances from prep_queued/preparing/ready to building and then occupied.
+- Lot building type now updates to small_house when the build completes.
+- Lot building level now updates to 1 when the Small House completes.
+- Lot status display now includes Build Phase.
+- Existing skip-if-correct block logic is used for the Small House build.
+- Special control blocks are preserved if accidentally targeted by a build step.
+- Fresh BP/RP/module UUIDs included for clean import beside earlier test builds.
+
+Testing notes:
+1. Place Township Founding Stone and wait for starter camp completion.
+2. Place Township Lot Marker inside the township build radius and away from the central lot.
+3. Builder should prepare the 11x11 lot.
+4. Builder should then build a Small House automatically.
+5. Crouch near the Lot Marker and confirm Building Type becomes small_house, Building Level becomes 1, and Lot Status becomes occupied.
+
+Known issues:
+- Small House is a first test structure and uses a simple flat roof.
+- Doors and beds are intentionally skipped for now because they require block-state/permutation handling.
+- Builder still uses vanilla villager behavior outside active construction.

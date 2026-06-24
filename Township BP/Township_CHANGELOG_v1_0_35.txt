@@ -1,0 +1,25 @@
+Township v1.0.35 Changelog
+
+Update workflow:
+- Same fixed BP/RP/module UUID identity retained.
+- Manifest/module/dependency versions bumped to 1.0.35 only.
+
+Bug fix:
+- Reverted the incorrect Founding Stone town-prep fill height.
+- The township founding-area leveling now fills dirt only up to y - 1 under the Founding Stone.
+- The Founding Stone is intended to remain one block above the prepared ground, not sunk into the dirt.
+- The previous behavior came from filling the town-prep surface at the Founding Stone block's own Y level.
+
+Kept from v1.0.34:
+- Ground Leveler removes itself after completion.
+- Township prep/boundary radius remains 64 for this test build.
+- Town clear height remains 16 above / 2 below.
+- Farm patches stay outside/in the yard.
+- Build Recorder remains included.
+- Door/bed logic remains unchanged from the working restored version.
+
+Test:
+1. Import over v1.0.34.
+2. Place a fresh Township Founding Stone.
+3. Confirm the Founding Stone sits one block above the prepared dirt surface.
+4. Confirm the town-prep clear/border/main-lot order still runs.

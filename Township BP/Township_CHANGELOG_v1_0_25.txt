@@ -1,0 +1,64 @@
+Township Changelog
+Version: v1.0.25
+
+Stable base before this build:
+- v1.0.24 had working Founding Stone, Lot Marker, Ground Leveler, road preview/particles, bigger township area, and five automatic building variants.
+
+Critical update workflow change:
+- This build stops using fresh UUIDs for every export.
+- From v1.0.25 forward, Township should update as the same add-on by keeping the same pack/module UUIDs and increasing only the manifest/module/dependency versions.
+- This is required for better mobile update behavior and for preserving world dynamic-property data tied to the behavior pack identity.
+
+Fixed Township pack identity going forward:
+- BP header UUID: efb55785-5680-46d8-b4c7-8f8a2cddf364
+- BP data module UUID: 7e320f0f-f615-4230-8b83-e6a0ffdc87cd
+- BP script module UUID: 0546c591-16c9-4f60-bc44-fec4a749892c
+- RP header UUID: 6effc74f-a22d-46d5-95f2-778c00fdfb9b
+- RP resources module UUID: 7d1e0f0c-e786-41df-870d-72e9ea96ed10
+- Namespace: township
+- Current version: 1.0.25
+
+Required future update rules:
+- Keep BP header UUID the same.
+- Keep BP module UUIDs the same.
+- Keep RP header UUID the same.
+- Keep RP module UUID the same.
+- Increase BP header.version.
+- Increase every BP module.version.
+- Increase RP header.version.
+- Increase every RP module.version.
+- Update BP dependency on the RP to the new RP version.
+- Update RP dependency on the BP to the new BP version.
+- Keep RP header.pack_scope = "world".
+- Do not use fresh UUIDs unless intentionally creating a separate add-on.
+
+Gameplay and bug fixes:
+- Replaced the earlier "same building in different styles" system with five more distinct building shapes that share one Township starter style family.
+- New automatic building variants:
+  1. Small Cottage
+  2. Narrow House
+  3. Wide House
+  4. Workshop
+  5. Storage Cottage
+- These buildings use different footprints/silhouettes instead of only swapping materials.
+- Kept the same starter style family: oak logs/planks, spruce roofs, simple chimneys, practical interiors.
+- Reworked interior placement so beds, chests, furnaces, crafting tables, and barrels sit against interior walls instead of cluttering the center or embedding into the back wall.
+- Changed door block ID from minecraft:oak_door to minecraft:wooden_door for Bedrock compatibility.
+- Changed bed block ID from minecraft:red_bed to minecraft:bed for Bedrock compatibility.
+- Kept directional door and bed state placement logic.
+- Improved road avoidance by expanding blocked lot bounds for road pathfinding and road brush placement.
+- Removed the short broken-road-stub fallback when no safe road route is found.
+- Roads should now either find a safer path around lots or fail without creating a short partial road.
+
+Known items to test:
+- Confirm this imports as an update over v1.0.24 instead of a new separate add-on.
+- Confirm existing township data persists when updating from v1.0.24 to v1.0.25.
+- Confirm new buildings look meaningfully different, not just material swaps.
+- Confirm real doors and beds appear correctly.
+- Confirm furniture is against the walls.
+- Confirm roads avoid other lots better and do not create short broken stubs.
+
+Known limitations:
+- Door/bed orientation still needs testing in all four Lot Marker facing directions.
+- Road routing is still prototype-level; it avoids registered lots but does not yet build a formal township road grid.
+- The builder still uses a vanilla villager base and may wander outside active construction.

@@ -1,0 +1,25 @@
+Township CHANGELOG v1.0.60
+
+Emergency block visibility repair.
+
+Problem observed:
+- In Minecraft, only Township Dirt Road appeared.
+- Other Township custom blocks were missing from the creative inventory/block list.
+
+Likely cause addressed:
+- Dirt Road used block format_version 1.21.90.
+- The other block definition files were still on format_version 1.21.40.
+- v1.0.60 updates every Township block definition to format_version 1.21.90.
+
+Changes:
+- Updated all Township BP/blocks/*.json files to format_version 1.21.90.
+- Kept custom block component entries removed from v1.0.59 so block registration stays simple for this repair build.
+- Bumped BP/RP manifests and dependencies to 1.0.60.
+- Preserved existing UUIDs.
+- No saved-building feature added.
+- No township radius/ticking-area logic changed.
+
+Test focus:
+1. Import v1.0.60.
+2. Confirm all Township blocks appear, not only Dirt Road.
+3. Do not test saved-building features yet.

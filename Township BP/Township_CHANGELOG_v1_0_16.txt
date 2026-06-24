@@ -1,0 +1,23 @@
+Township Changelog v1.0.16
+
+Current stable base: v1.0.15
+
+v1.0.16 changes:
+- Fresh UUIDs for clean Android import beside older test builds.
+- Improved the first Small House layout.
+- Kept the Lot Marker as a front-yard control post.
+- Added a small gravel walk from the marker toward the house.
+- Moved the house fully inside the rear half of the 11x11 lot.
+- Added side windows using stable glass blocks.
+- Replaced the flat test-box roof with a larger eave layer and raised center cap/ridge using full blocks only.
+- Added a simple wool bedroll placeholder while avoiding bed block-state/permutation issues.
+- Kept existing clear/level/build/complete job flow, skip-if-correct logic, Android crouch status, lot rejection rules, and builder nudge-back behavior.
+
+Test:
+1. Import Township_v1_0_16.mcaddon.
+2. Activate Township BP; RP should link automatically.
+3. Place Township Founding Stone.
+4. Wait for starter camp completion.
+5. Place Township Lot Marker inside the usable build radius and away from other lots.
+6. Confirm the builder prepares the 11x11 lot and builds the improved Small House.
+7. Crouch near the Lot Marker and confirm status shows occupied, small_house, level 1.

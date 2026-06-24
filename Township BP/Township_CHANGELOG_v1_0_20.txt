@@ -1,0 +1,21 @@
+Township v1.0.20
+
+Status:
+- Built from the working v1.0.19 base.
+- Fresh UUIDs for clean Android import beside older test builds.
+
+Changes:
+- Kept the real oak door and real red bed from v1.0.19.
+- Added Township Dirt Road as the first custom road block.
+- Added Township Dirt Road to the Township creative group/search.
+- After a Small House completes, the builder now queues and builds a simple dirt road from the lot front toward the starter camp front opening.
+- Lot status now includes Road Phase as well as Road Status.
+- Added a small porch to the Small House front.
+- Added more stable full-block exterior detail, including a simple chimney.
+- Added a furnace inside the Small House.
+- Increased house and road work batch sizes slightly for faster testing.
+
+Known limitations:
+- Road routing is a simple Manhattan path and may cut straight through rough terrain.
+- Road connection is still prototype logic, not the final auto-road network.
+- Door/bed orientation should be tested from several Lot Marker facing directions.

@@ -1,0 +1,18 @@
+Township Changelog v1.0.11
+
+Stable base carried forward from v1.0.10.
+
+Changes in v1.0.11:
+- Exported with fresh BP/RP/module UUIDs so Minecraft can import it beside the prior test build.
+- Increased test build speed by processing multiple starter-camp blocks per build step.
+- Changed the main script tick loop to run more often during testing.
+- Added an 11x11 starter lot preparation area.
+- Added oak fencing around the starter camp lot with a front opening.
+- Kept skip-if-correct logic, including already-air blocks.
+- Kept clear lot, level lot, build camp, mark complete phases.
+- Kept Android crouch-near-Founding-Stone status behavior.
+
+Known issues:
+- Starter camp is still a prototype layout.
+- Builder is still a vanilla villager and may wander when not being nudged during construction.
+- Fence/gate styling is temporary; this is only to test lot borders.

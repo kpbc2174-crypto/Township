@@ -1,0 +1,27 @@
+Township v1.0.47
+
+Purpose:
+Focused ticking-area repair/diagnostic build after v1.0.46 stalled while waiting for writable setup sections.
+
+Changes:
+- Version bumped to 1.0.47 only.
+- Same fixed UUID update workflow retained.
+- Ticking-area writable probe now checks near the section center instead of section corners.
+- Writable probe now checks one block below marker/founding Y to avoid false failures from probing empty air above the surface.
+- Air-block probe no longer performs a same-type air write. It now performs a controlled temporary dirt write and immediately restores air.
+- Non-air probe blocks are restored by original permutation when possible.
+- Added a hard 10-check limit so the script cannot loop forever on “waiting for writable ticking area.”
+- Failure now reports clearly instead of endlessly repeating.
+
+Unchanged:
+- Township radius unchanged.
+- Inner fence radius unchanged.
+- Lot marker height rules unchanged.
+- Ground-level rules unchanged.
+- Building templates unchanged.
+- Auto-place limits unchanged.
+
+Test:
+Place a fresh Township Founding Stone.
+Confirm setup section 1/16 moves past the writable check and starts clearing/leveling.
+If it fails, capture the exact failure message; it should now stop after 10 checks instead of hanging forever.

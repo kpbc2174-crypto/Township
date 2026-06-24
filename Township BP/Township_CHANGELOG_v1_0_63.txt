@@ -1,0 +1,25 @@
+Township v1.0.63 Changelog
+
+Purpose:
+Emergency rollback/recovery build after v1.0.62 broke the custom blocks again.
+
+Base:
+Restored from the confirmed working v1.0.61 recovery checkpoint.
+
+Changes:
+- Removed the v1.0.62 direct custom block component entries by returning to the v1.0.61 block JSON state.
+- Preserved visible custom Township blocks.
+- Bumped BP/RP pack and module versions to 1.0.63.
+- Updated main.js internal VERSION constant to 1.0.63.
+- Preserved the same Behavior Pack and Resource Pack UUIDs.
+- Preserved @minecraft/server and @minecraft/server-ui dependency versions at [1, 0, 47].
+- Did not add saved-building logic.
+- Did not change township generation, road logic, lot logic, or ticking-area logic.
+
+Research finding:
+The v1.0.62 break was caused by re-adding custom block component IDs directly as normal component keys, for example "township:founding_stone_component": {}. In the current official custom component tutorial, block custom components are attached with the "minecraft:custom_components" component list, while the sample manifest uses @minecraft/server version "2.0.0". The direct component-key approach is not safe for this project’s current manifest/API setup.
+
+Test:
+- Import v1.0.63.
+- Confirm all custom Township blocks appear.
+- Do not test direct-click custom components in this build; this is a recovery baseline.

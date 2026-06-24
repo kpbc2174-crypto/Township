@@ -1,0 +1,18 @@
+Township CHANGELOG v1.0.29
+
+Version bump/update policy:
+- Same fixed BP/RP/module UUIDs as v1.0.25+.
+- Manifest/module/dependency versions bumped to 1.0.29.
+
+Bug fixes:
+- Fixed queued/half-built lots caused by the large township-prep job monopolizing the builder job queue.
+- Township founding-area prep now runs in the background and no longer blocks lot prep, building, and road jobs.
+- Township boundary fencing/torches are queued before bulk clearing/leveling so the boundary appears earlier.
+- Increased founding-area overhead clearing height from 10 to 32 blocks.
+- Increased builder work throughput for lot prep, house construction, road work, and town prep.
+- Added a lot floor repair pass before each building is constructed so house clear/build phases do not leave dips under or around houses.
+- Constrained side wings/extra shapes so generated buildings should not tear down lot side fences or build outside their own lot bounds.
+
+Notes:
+- This is a stability-repair build after v1.0.28 showed queued lots, partial builds, unfinished boundary work, and insufficient overhead clearing.
+- Medium and large lot systems remain enabled.

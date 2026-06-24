@@ -1,0 +1,17 @@
+Township v1.0.31 Changelog
+
+Update workflow:
+- Same fixed Township BP/RP/module UUID identity retained.
+- Manifest/module/dependency versions bumped to 1.0.31 only.
+
+Bug fixes:
+- Fixed town prep boundary order. The township prep boundary fence/torches are now rebuilt after clearing and leveling so the prep job does not erase its own fence.
+- Visible township prep boundary now uses the prepared work-pad radius for reliable placement in loaded chunks. Claim/build radius remains larger in town data.
+- Founding Stone town prep now clears from 3 blocks below the founding level up to 96 blocks above it.
+- Town prep now clears stale Township Lot Marker blocks across the taller clear volume.
+- Builder arrival delay shortened for testing so the starter camp/main lot starts sooner after founding.
+- Town prep dirt fill is four layers deep and still uses normal dirt so grass can regrow.
+
+Known notes:
+- The visible fence marks the prepared work pad, not the full claim radius. The full build/claim radius is still reported in the Founding Stone status.
+- Build Recorder remains included from v1.0.30.

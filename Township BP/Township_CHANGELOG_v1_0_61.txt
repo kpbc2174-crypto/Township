@@ -1,0 +1,21 @@
+Township v1.0.61 Changelog
+
+Purpose:
+Emergency manifest and script dependency repair after v1.0.59/v1.0.60 block visibility failures.
+
+Changes:
+- Kept the v1.0.60 custom block visibility approach: no custom component entries in block JSON.
+- Kept all Township block JSON files at format_version 1.21.90.
+- Corrected @minecraft/server dependency from [1,0,60] to [1,0,47].
+- Corrected @minecraft/server-ui dependency from [1,0,60] to [1,0,47].
+- Updated scripts/main.js VERSION constant from 1.0.59 to 1.0.61.
+- Bumped BP and RP header/module versions to 1.0.61.
+- Preserved all pack UUIDs and module UUIDs.
+- Did not add saved-building logic.
+- Did not change township generation, radius, road, lot, or ticking-area logic beyond the v1.0.60 state.
+
+Reason:
+The v1.0.59 and v1.0.60 manifests incorrectly changed Script API module dependency versions to match the pack version. The prior stable v1.0.56 manifest used @minecraft/server and @minecraft/server-ui version [1,0,47]. Invalid module dependency versions can prevent the Behavior Pack script/module layer from loading correctly.
+
+Test target:
+Import v1.0.61 and verify all Township custom blocks appear in inventory/creative search, not only Dirt Road.

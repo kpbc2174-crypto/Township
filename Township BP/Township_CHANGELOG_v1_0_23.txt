@@ -1,0 +1,22 @@
+Township v1.0.23 Changelog
+
+Stable base: v1.0.22
+
+Bug fixes and improvements:
+- Increased township territory for testing: claim radius is now 192 blocks, starting build radius is now 128 blocks.
+- Existing town records are migrated upward to the larger claim/build radius when the script loads.
+- Improved road routing so roads avoid all registered lot bounds, not just their own lot.
+- Roads now try to connect to the nearest existing Township Dirt Road before falling back to the town-center road target.
+- Road pathing now uses a simple obstacle-aware route instead of a straight line through other lots.
+- Road placement still uses a 3-wide brush, but skips blocks inside lot bounds and protected township blocks.
+- Increased Township Ground Leveler size to 41x41.
+- Increased Ground Leveler overhead clearing to 16 blocks above placement height.
+- Increased Ground Leveler work speed for testing.
+- Added two more automatic building variants: Stone Cottage and Plank Cottage.
+- Auto-build lots now choose from five building variants: Small House, Log Cabin, Workshop House, Stone Cottage, and Plank Cottage.
+- Kept fresh UUIDs for clean Android import.
+
+Known limits:
+- Road routing is improved but still prototype-level; it does not yet understand a formal road network with intersections.
+- Building designs are still starter-grade and will need later art passes.
+- Doors and beds should continue to be checked from different marker-facing directions.

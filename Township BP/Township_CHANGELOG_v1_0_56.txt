@@ -1,0 +1,29 @@
+Township v1.0.56
+
+Changed:
+- Rewired interactive blocks to use the proven clickable custom block component pattern.
+- Interactive block JSON now uses the custom component key directly under components, for example township:build_recorder_component: {}.
+- Removed the old crouch/nearby status UI trigger from the active tick loop.
+- Removed global interact/item-use UI fallbacks so UI opening is no longer tied to the old crouch method.
+
+Blocks wired for direct click UI:
+- Township Founding Stone
+- Small / Medium / Large Lot Markers
+- Small / Medium / Large Build Lots
+- Build Recorder
+- Ground Leveler
+
+Build Lot UI check:
+- Kept Set Name / Capture Settings.
+- Kept Save Build.
+- Kept Export Saved Build.
+- Kept Clear Saved Build.
+- Kept Clear Physical Lot.
+- Kept Show Lot Info.
+- Added a quick Natural Blocks: Include/Ignore toggle button in the main Build Lot menu.
+
+Unchanged:
+- Town generation.
+- Road logic.
+- Auto-place logic.
+- Recorder textures and export format from v1.0.54.

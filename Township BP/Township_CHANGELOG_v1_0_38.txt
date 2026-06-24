@@ -1,0 +1,24 @@
+Township v1.0.38
+
+Update workflow:
+- Same fixed BP/RP/module UUIDs.
+- Version bumped to 1.0.38 only.
+
+Fixes:
+- Keeps the v1.0.37 quadrant setup system.
+- Fixes the freeze after successful quadrant setup/boundary completion.
+- The Founding Stone is now explicitly restored/protected after township prep completes.
+- If builder spawn sees missing_founding_stone after prep, the script restores the Founding Stone and retries builder spawn instead of staying stuck.
+- Starter camp/main lot should now continue after: clear quadrants -> level quadrants -> build outer fence -> prep complete.
+
+No intentional changes:
+- No ground-level rule change.
+- No lot marker placement rule change.
+- No claim/build radius change.
+- No building-template redesign in this build.
+
+Test:
+1. Place a fresh Township Founding Stone.
+2. Wait until all four quadrants finish and the outer fence appears.
+3. Check status: Builder should not stay missing_founding_stone.
+4. Confirm the starter/main lot begins after prep completes.

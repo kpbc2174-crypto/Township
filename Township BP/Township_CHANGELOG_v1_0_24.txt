@@ -1,0 +1,20 @@
+Township CHANGELOG v1.0.24
+
+Base: v1.0.23 stable checkpoint.
+
+Changes:
+- Added Lot Marker border preview behavior while holding the Township Lot Marker block.
+- When holding Township Lot Marker, nearby registered lot borders emit temporary preview particles.
+- When the player is looking at a placement surface while holding Township Lot Marker, the candidate directional 11x11 lot preview is also shown when the Script API raycast is available.
+- Preview uses particles only and does not modify terrain.
+- Existing systems preserved: larger township claim/build area, five automatic building variants, 3-wide roads, road avoidance around registered lots, Township Ground Leveler, Android crouch status, and fresh UUID import behavior.
+
+Test notes:
+1. Hold the Township Lot Marker block.
+2. Stand near existing registered lots and confirm their boundaries appear as temporary particles.
+3. Look at ground while holding the Lot Marker and check whether a placement preview appears.
+4. Place the marker and confirm the actual prepared lot still matches the preview direction.
+
+Known limits:
+- Particle visibility depends on the client and graphics settings.
+- Candidate placement preview depends on the stable player.getBlockFromViewDirection API being available on the current Bedrock build.

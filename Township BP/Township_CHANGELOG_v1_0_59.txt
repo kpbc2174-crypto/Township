@@ -1,0 +1,28 @@
+Township Changelog v1.0.59
+
+Emergency visibility repair after v1.0.57/v1.0.58 testing.
+
+Problem observed:
+- In Minecraft, only Township Dirt Road appeared.
+- Other Township custom blocks were missing.
+
+Cause identified from package inspection:
+- Dirt Road was the only custom block without a custom block component in its block JSON.
+- All missing Township blocks had township:* custom component entries.
+- On the user's current Bedrock setup, those component entries are causing the blocks to fail or not appear.
+
+Changes in v1.0.59:
+- Removed township custom component entries from all Township block JSON files.
+- Kept all block identifiers, textures, names, and UUIDs unchanged.
+- Restored stable UI access through crouch-near-block checks.
+- Added item-use fallback: hold any item and tap/use it on a Township UI block to open its menu if the platform fires itemUseOn.
+- Bumped BP/RP manifest versions to 1.0.59.
+- Updated script VERSION to 1.0.59.
+
+Expected result:
+- Founding Stone, Lot Markers, Build Lots, Build Recorder, Ground Leveler, and Dirt Road should all appear again.
+- Direct empty-hand click UI is not used in this build.
+- Use crouch near the block or tap it while holding an item for UI access.
+
+Next safe step after this passes:
+- Rebuild saved-building features only after the visible block baseline is confirmed working again.

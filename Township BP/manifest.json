@@ -2,26 +2,50 @@
   "format_version": 2,
   "header": {
     "name": "Township BP",
-    "description": "Township Behavior Pack",
-    "uuid": "5c3bda43-b332-4c31-b4e4-c1e3bc61e8f8",
-    "version": [1, 0, 84],
-    "min_engine_version": [1, 21, 90]
+    "description": "Township v1.0.85 Script API 2.0.0 migration test only",
+    "uuid": "efb55785-5680-46d8-b4c7-8f8a2cddf364",
+    "version": [
+      1,
+      0,
+      85
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      90
+    ]
   },
   "modules": [
     {
       "type": "data",
-      "uuid": "c12b8d69-b228-468f-bec4-2dbf8dfd13be",
-      "version": [1, 0, 84]
+      "uuid": "7e320f0f-f615-4230-8b83-e6a0ffdc87cd",
+      "version": [
+        1,
+        0,
+        85
+      ]
     },
     {
       "type": "script",
       "language": "javascript",
-      "uuid": "3dc58dc6-f9d6-49af-a930-a31559a0e2fe",
-      "version": [1, 0, 84],
-      "entry": "scripts/main.js"
+      "entry": "scripts/main.js",
+      "uuid": "0546c591-16c9-4f60-bc44-fec4a749892c",
+      "version": [
+        1,
+        0,
+        85
+      ]
     }
   ],
   "dependencies": [
+    {
+      "uuid": "6effc74f-a22d-46d5-95f2-778c00fdfb9b",
+      "version": [
+        1,
+        0,
+        85
+      ]
+    },
     {
       "module_name": "@minecraft/server",
       "version": "2.0.0"
@@ -29,10 +53,6 @@
     {
       "module_name": "@minecraft/server-ui",
       "version": "2.0.0"
-    },
-    {
-      "uuid": "4d8be2e5-8eb0-4eb6-a9f3-d22e399f12a3",
-      "version": [1, 0, 84]
     }
   ]
 }

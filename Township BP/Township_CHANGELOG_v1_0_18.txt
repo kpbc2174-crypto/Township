@@ -1,0 +1,23 @@
+Township v1.0.18 Changelog
+
+Stable base: v1.0.17.
+
+Changes:
+- Added player-facing orientation capture for the Township Founding Stone.
+- The starter camp now uses the Founding Stone front direction for its front opening and props.
+- Changed Township Lot Marker logic so the marker is the front-center of the lot instead of the middle.
+- Lot direction is now based on the placing player's facing direction.
+- Small Lots now extend 11 blocks behind the Lot Marker with 5 blocks to each side.
+- Lot prep, clearing, leveling, fencing, and torches now use the directional front-marker footprint.
+- Small House placement now builds behind the Lot Marker instead of around it.
+- The Small House doorway faces the Lot Marker/front side.
+- Added a path from the Lot Marker to the Small House.
+- Improved Small House layout using stable full-block placement only.
+- Lot status now shows Lot Front and Lot Back directions.
+- Founding Stone status now shows Town Front direction.
+- Updated lot rejection checks to use lot bounds instead of center-distance only.
+- Fresh UUIDs included for clean Android import beside older test builds.
+
+Notes:
+- No real door block yet. Door permutation/facing still needs a verified stable implementation.
+- No road blocks yet. Road logic should come after this directional lot system is confirmed working.

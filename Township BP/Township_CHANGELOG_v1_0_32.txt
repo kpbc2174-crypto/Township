@@ -1,0 +1,27 @@
+Township CHANGELOG v1.0.32
+
+Update workflow:
+- Same fixed Township BP/RP/module UUID identity retained.
+- Version bumped to 1.0.32 only.
+
+Main correction:
+- Founding Stone setup now runs in strict order: clear founding area, mark visible boundary, then start the starter/main lot.
+- The builder no longer starts the starter camp while the founding-area prep job is still pending.
+- If the builder arrives before prep finishes, he waits until prep completes, then starts the starter camp.
+
+Clear job fix:
+- Reduced Founding Stone vertical clear height from 96 blocks above the founding level to 16 blocks above.
+- Clear starts only 2 blocks below the founding level.
+- This prevents the huge vertical clear job from monopolizing the queue and leaving the main lot stuck.
+- Town prep block throughput increased so the smaller clear pass completes faster.
+
+Prepared area/boundary adjustment:
+- Prepared founding area uses a 48-block radius work pad for this test build.
+- Boundary fence/torches are placed after clear/level, then the starter camp begins after the town prep job completes.
+- Claim radius remains 192 and build radius remains 128.
+
+Kept from prior builds:
+- Build Recorder remains included.
+- Door/bed logic restored from v1.0.30 remains included.
+- Small/medium/large lot markers remain included.
+- Ground Leveler remains included.

@@ -1,0 +1,25 @@
+tile.township:founding_stone.name=Township Founding Stone
+
+township:itemGroup.name.township=Township
+
+tile.township:lot_marker.name=Township Lot Marker
+
+
+tile.township:dirt_road.name=Township Dirt Road
+
+
+tile.township:ground_leveler.name=Township Ground Leveler
+
+
+tile.township:medium_lot_marker.name=Township Medium Lot Marker
+
+
+tile.township:large_lot_marker.name=Township Large Lot Marker
+
+tile.township:build_recorder.name=Township Build Recorder
+
+tile.township:small_build_lot.name=Township Small Build Lot
+
+tile.township:medium_build_lot.name=Township Medium Build Lot
+
+tile.township:large_build_lot.name=Township Large Build Lot

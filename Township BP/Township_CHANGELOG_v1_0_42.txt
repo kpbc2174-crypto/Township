@@ -1,0 +1,32 @@
+Township v1.0.42
+
+Update workflow:
+- Same fixed BP/RP/module UUID identity retained.
+- Version bumped to 1.0.42 only.
+
+Purpose of this build:
+- v1.0.41 increased the township size, but the initial setup still used four large quadrant jobs. The first quadrant could hang because the loaded setup area and the larger boundary/setup work no longer matched cleanly.
+
+Fixes:
+- Replaced the four-quadrant founding setup with sixteen smaller setup sections.
+- Each setup section loads separately, works, unloads, then advances to the next section.
+- Boundary marking now uses the boundary-radius section when loading, instead of trying to place far-boundary blocks while only the smaller prep-radius section is loaded.
+- Added a short wait after each setup ticking area is added so the section has time to load before block work starts.
+- Added a small stuck-block failsafe so one failed block placement cannot freeze the entire founding setup forever.
+- Villagers no longer spawn during initial setup.
+- Two vanilla villagers now spawn only after township setup and the starter/main lot are complete.
+
+Unchanged:
+- No township radius change from v1.0.41.
+- No lot marker height change.
+- No ground-level rule change.
+- No lot placement rule change.
+- No building template change.
+
+Test:
+1. Import over v1.0.41.
+2. Place a fresh Township Founding Stone.
+3. Watch for section progress through 16 setup sections.
+4. Confirm the outer fence still completes.
+5. Confirm the setup advances into the starter/main lot instead of freezing.
+6. Confirm the two vanilla villagers appear only after the starter/main lot is complete.

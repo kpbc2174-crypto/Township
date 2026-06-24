@@ -1,0 +1,16 @@
+Township CHANGELOG v1.0.9
+
+Stable base: v1.0.7/v1.0.8 lifecycle behavior.
+
+Changes in v1.0.9:
+- Improved starter camp layout.
+- Replaced the janky internal log/wall layout with a cleaner open pavilion.
+- Starter camp now uses a 9x9 prepared area, four corner posts, an open shelter, and a simple roof.
+- Added faster skip logic for already-correct blocks.
+- Air entries that are already air are now skipped immediately instead of consuming one build delay each.
+- Kept Android crouch-near-Founding-Stone status behavior.
+- Kept builder nudge-back behavior during construction.
+
+Known issues:
+- The Township Builder is still a vanilla villager and can wander outside active construction moments.
+- The starter camp is still a prototype structure, not the final central lot/town hall design.

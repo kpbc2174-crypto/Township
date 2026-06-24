@@ -1,0 +1,25 @@
+Township CHANGELOG v1.0.13
+
+Current build: Township v1.0.13
+
+Status:
+- Version bump from v1.0.12.
+- No gameplay/system changes from v1.0.12.
+- Fresh BP/RP/module UUIDs were generated so Minecraft can import this build beside older test builds.
+- Script VERSION constant updated to 1.0.13.
+- Pack manifest versions updated to [1, 0, 13].
+
+Retained from v1.0.12:
+- Township Founding Stone.
+- Township creation and no-overlap rule.
+- Delayed Township Builder arrival.
+- Starter camp build lifecycle.
+- Android crouch-near-block status.
+- Township Lot Marker block.
+- Small Lot size: 11x11.
+- Lot placement rejection when outside usable radius, too close to starter lot, or too close to another lot.
+- Lot Marker break removes its lot record.
+
+Testing notes:
+- Import should not trigger the duplicate-pack warning.
+- Test Founding Stone, starter camp, Lot Marker registration, and Lot Marker rejection checks.

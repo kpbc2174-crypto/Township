@@ -1,5 +1,5 @@
-Township v1.0.85 Script API 2.0.0 migration test only.
+Township v1.0.85
 
-This source snapshot is imported from the saved Township_v1_0_85.mcaddon package.
+Script API 2.0.0 migration test build.
 
-Known status: the current API migration needs in-game verification for the ticking-area command path before new feature work.
+This build intentionally changes only the manifest Script API dependency line and version metadata. It does not add click UI or new gameplay features.

@@ -1,0 +1,40 @@
+Township v1.0.44
+
+Update workflow:
+- Same fixed BP/RP UUID identity retained.
+- Version bumped to 1.0.44 only.
+
+Town layout change:
+- Township radius remains 192.
+- New inner town/fence radius is 96, which is half the township radius.
+- Founding setup now flattens and fences only the inner town area instead of the whole township.
+- The inner fence represents the starter town core, not the full township edge.
+- The outer township area remains available for later outside-fence lots such as farms, animal pens, and rural utility lots.
+
+Fence/wall reserve:
+- Added an inner wall reserve corridor around the starter fence.
+- Lot markers are rejected if their lot would overlap the reserved fence/wall upgrade band.
+- This leaves room to upgrade the starter fence into a larger wall later.
+
+Gate and road layout:
+- The inner fence gets north, south, east, and west gate openings.
+- Roads are placed from the main/starter lot outward toward those four gate openings.
+- The main lot road loop remains outside the main lot fence.
+
+Setup stability:
+- Reduced setup work from the full township radius to the inner radius.
+- Dirt fill uses setup-friendly handling so normal dirt placement does not flood chat with repeated failure messages.
+- Setup skipped-block messages are summarized by section instead of spamming every coordinate.
+- Founding Stone support repair remains included.
+
+Build stability:
+- Building verification now checks only stable anchor blocks instead of every decorative/template block.
+- Building verification has a hard retry limit to prevent endless rebuild loops.
+- This should reduce cases where paths appear/disappear because a build retry is fighting a road job.
+
+Unchanged:
+- Township total radius remains 192.
+- Lot marker height rules unchanged.
+- Ground-level rules unchanged.
+- Building templates unchanged.
+- Auto-place limits unchanged.

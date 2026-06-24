@@ -1,0 +1,21 @@
+Township v1.0.22 Changelog
+
+Stable base: v1.0.20/v1.0.21 systems remain in place.
+
+Changes in this build:
+- Added three automatic building variants for prepared lots:
+  - Small House
+  - Log Cabin
+  - Workshop House
+- Builder now chooses one of the three building variants automatically per lot.
+- Improved the house layouts so chests, crafting tables, furnaces, beds, and other utility blocks are placed inside the room instead of embedded into the back wall.
+- Reworked the road path start so the road begins outside the Lot Marker/front edge instead of cutting backward through its own lot.
+- Road builder now skips blocks inside the lot bounds, reducing cases where a road carves through the house, fence, or yard.
+- Kept 3-wide Township Dirt Road behavior from v1.0.21.
+- Kept Township Ground Leveler behavior from v1.0.21.
+- Kept directional Founding Stone, directional Lot Marker, lot prep, building jobs, road jobs, Android crouch status, and fresh UUID import workflow.
+
+Known limits:
+- Door orientation is still experimental and should be tested from different Lot Marker directions.
+- Road routing is still prototype-level and may need smarter pathfinding later.
+- The three building variants are first-pass designs and can be visually improved.

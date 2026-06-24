@@ -1,0 +1,34 @@
+Township CHANGELOG v1.0.37
+
+Update workflow:
+- Same fixed Township BP/RP/module UUID identity retained.
+- Manifest/header/module/dependency versions bumped to 1.0.37 only.
+
+Confirmed rules preserved from v1.0.36:
+- Founding Stone remains one block above prepared dirt.
+- Lot Markers remain one block above prepared dirt.
+- Prepared dirt surface is marker/founding-stone Y - 1.
+- No claim/build radius changes were made in this build.
+- No lot marker placement rule changes were made in this build.
+
+Initial township setup change:
+- Reworked Founding Stone town-prep into quadrant phases instead of one giant setup plan.
+- Setup order per quadrant is: clear area, level dirt, mark outer boundary.
+- Quadrant order is: south-east, north-east, north-west, south-west.
+- Each quadrant only builds the outside boundary edges it owns, so it should not create cross-fences through the town center.
+
+Temporary chunk-loading test:
+- During initial township setup, the script attempts to add a temporary ticking area for the active quadrant.
+- When that quadrant finishes, it removes the temporary ticking area and moves to the next quadrant.
+- After all quadrants finish, no setup ticking area should remain.
+- This uses Bedrock command-based ticking areas from script and must be tested in-game on Android.
+
+Purpose:
+- Test whether quadrant loading lets the initial clear/level/boundary finish more reliably.
+- Prevent the township prep from becoming one huge hanging job.
+- Keep the main/starter lot from starting until quadrant setup completes.
+
+Still not changed:
+- Active lot/build/road ticking areas are not implemented yet.
+- Building presets are not reworked in this build.
+- Township size/radius is not changed in this build.

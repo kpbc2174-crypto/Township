@@ -1,0 +1,19 @@
+Township v1.0.21 Changelog
+
+Stable base: v1.0.20.
+
+Changes:
+- Added Township Ground Leveler block.
+- Ground Leveler queues a large 31x31 leveling job inside an active township build radius.
+- Ground Leveler clears 12 blocks above its placement level and levels the ground to its base/floor level.
+- Ground Leveler preserves the Ground Leveler block itself and township control blocks.
+- Roads are now wider: prototype road jobs place a 3-wide/brush-style Township Dirt Road path.
+- Changed lot job ordering so a completed lot prep prioritizes that lot's house before moving to the next lot.
+- Changed house completion to prioritize that lot's road before moving to the next queued lot.
+- Kept automatic full-lot clearing for now.
+- Kept directional Founding Stone, directional Lot Marker, Android crouch status, and fresh UUID import behavior.
+
+Known limits:
+- Ground Leveler is a blunt testing utility and can remove player-built terrain/features in its 31x31 area.
+- Road routing is still prototype Manhattan routing and can cut through terrain.
+- Door placement still needs multi-direction testing on device.

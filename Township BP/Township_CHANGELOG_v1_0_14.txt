@@ -1,0 +1,28 @@
+Township CHANGELOG v1.0.14
+
+Stable base carried forward from v1.0.13:
+- Township Founding Stone works.
+- Starter camp works.
+- Township Lot Marker registers small lots.
+- Android crouch-near-block status works for Founding Stone and Lot Marker.
+
+Changes in v1.0.14:
+- Added builder-driven lot preparation for Township Lot Marker lots.
+- Valid Lot Markers now queue a prepare-lot job automatically.
+- Builder prepares marked lots after the starter camp is complete.
+- Lot prep phases added: clear_lot, level_lot, outline_lot, ready.
+- Builder clears the 11x11 lot area while preserving the Lot Marker.
+- Builder levels the lot floor with coarse dirt.
+- Builder adds an oak fence boundary around the 11x11 lot.
+- Builder leaves an opening in the lot fence facing the town center.
+- Builder adds corner torches to make prepared lots easier to see.
+- Lot status now shows Lot Status and Prep Phase.
+- Founding Stone status now shows queued job count.
+- Lot Marker break cleanup now removes queued prepare-lot jobs for that lot.
+- Fresh UUIDs included for clean import beside older test builds.
+
+Known issues:
+- Lot boundary is still a temporary visual style.
+- Builder is still a vanilla villager and may wander when not actively being nudged during jobs.
+- No building selection is included yet.
+- No road logic is included yet.

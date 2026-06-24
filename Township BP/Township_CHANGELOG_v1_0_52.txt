@@ -1,0 +1,32 @@
+Township v1.0.52
+
+Identity/update:
+- Same fixed BP/RP UUID workflow retained.
+- Version bumped to 1.0.52 only.
+
+Auto queue stability:
+- Auto Place Lots no longer builds a backlog.
+- Auto placement now waits if any normal lot prep, building, or road job is active.
+- Auto placement also waits if any lot is registered, queued, preparing, ready, building, or occupied but not yet road-connected.
+- Toggling Auto Place Lots ON also respects this rule instead of force-placing into an active queue.
+- Candidate scanning was reduced to lower Android crash risk.
+
+Road protection:
+- Added primary road reserve checks for the four main town roads.
+- Added existing-road reserve checks around placed Township Dirt Road blocks.
+- Auto lot placement rejects candidates that overlap road corridors or road reserve space.
+- This should stop lots from being placed directly on top of main roads and reduce side-road clutter.
+
+Kept:
+- Single township radius: 96.
+- Working command-based /tickingarea add circle loading.
+- Existing town setup, fence, gates, and gate roads.
+- Existing building templates.
+- Road-facing logic retained: lots prefer to face nearby roads, otherwise face toward town center.
+
+Test:
+- Fresh world recommended.
+- Place the Founding Stone.
+- After starter setup, turn Auto Place Lots ON.
+- Confirm it only places one lot, lets that lot prep/build/road finish, then waits before placing another.
+- Watch whether lots avoid main roads and existing side roads.

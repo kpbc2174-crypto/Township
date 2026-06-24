@@ -1,0 +1,26 @@
+Township CHANGELOG v1.0.33
+
+Update workflow:
+- Same fixed BP/RP/module UUID identity retained from v1.0.25+.
+- Version bumped to 1.0.33 only.
+
+Preset building work:
+- Added glass-window emphasis in generated buildings through the shared shell builder.
+- Added more interior lighting points to reduce dark interiors.
+- Added temporary vanilla villager job blocks across the preset building pool: composter, barrel, smoker, blast furnace, cartography table, brewing stand, lectern, loom, stonecutter, fletching table, grindstone, smithing table, and cauldron.
+- Farm-type buildings now add an exterior farm patch and composter next to the farming area.
+- Interiors place furniture/workstations against walls instead of in the main walking lane.
+
+Town center / main lot:
+- Expanded the starter town-center lot to 17x17.
+- Added a Township Dirt Road loop around the main lot.
+- Changed starter lot floor from coarse dirt to normal dirt so grass can spread later.
+- Added more lighting around the starter town-center lot.
+- Ground Leveler protection around the main town center increased to match the larger central lot.
+
+Town prep / border:
+- Visible township prep boundary radius reduced to 32 for more reliable placement in loaded chunks.
+- Township prep still uses the larger prepared pad, but the visible border is kept closer so it should finish more consistently.
+
+Build Recorder:
+- Township Build Recorder remains included but unchanged in this version.

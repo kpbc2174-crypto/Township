@@ -1,0 +1,26 @@
+Township CHANGELOG v1.0.36
+
+Update method:
+- Same fixed BP/RP/module UUIDs retained.
+- Version bumped to 1.0.36 only.
+
+Fixes:
+- Corrected lot/building ground-level math globally.
+- Township Lot Markers remain one block above prepared dirt.
+- Building floors, paths, and porches now build on the prepared dirt surface at markerY - 1.
+- Walls, doors, beds, furniture, fences, and workstation blocks now sit at markerY.
+- This should stop buildings from appearing raised or from burying lot markers.
+- Founding Stone town-prep rule from v1.0.35 is retained: dirt fills to one block below the Founding Stone.
+
+No intentional changes:
+- No claim radius/build radius change.
+- No lot marker placement rule change.
+- No township boundary radius change.
+- No building selection change.
+
+Test:
+1. Place a fresh Township Founding Stone.
+2. Confirm the Founding Stone stays one block above the dirt surface.
+3. Place small, medium, and large Lot Markers.
+4. Confirm each marker remains one block above prepared dirt.
+5. Confirm buildings sit on the prepared surface instead of floating/raised or digging dips.

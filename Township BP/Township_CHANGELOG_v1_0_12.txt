@@ -1,0 +1,27 @@
+Township v1.0.12 Changelog
+
+Stable base: v1.0.11.
+
+Changes:
+- Added Township Lot Marker block: township:lot_marker.
+- Added Lot Marker to the Township creative catalog/search group.
+- Added Lot Marker texture and language name.
+- Lot Markers register a basic Small Lot for now.
+- Small Lot size is 11x11.
+- Lot Marker placement is rejected if outside the township usable build radius.
+- Lot Marker placement is rejected if it overlaps the starter town-center lot.
+- Lot Marker placement is rejected if it is too close to another township lot.
+- Crouch near a Township Lot Marker on Android to show lot status.
+- Breaking a Lot Marker removes its lot record.
+- Founding Stone status now shows registered lot count.
+- Fresh UUIDs are used for this exported test build.
+
+Test checklist:
+1. Import v1.0.12 beside the old version.
+2. Place a Township Founding Stone and let the starter camp complete.
+3. Search creative for Township Lot Marker.
+4. Place a Lot Marker inside the township build radius but away from the central lot.
+5. Crouch near the Lot Marker and confirm lot status appears.
+6. Place another Lot Marker too close to the first and confirm it is rejected.
+7. Place a Lot Marker too close to the Founding Stone/starter lot and confirm it is rejected.
+8. Place a Lot Marker outside the township build radius and confirm it is rejected.

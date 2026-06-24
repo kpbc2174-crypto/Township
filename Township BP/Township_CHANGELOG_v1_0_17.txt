@@ -1,0 +1,25 @@
+Township CHANGELOG v1.0.17
+
+Stable base carried forward:
+- Township Founding Stone.
+- Township builder arrival.
+- Starter camp construction.
+- Township Lot Marker.
+- Lot validation/rejection.
+- Builder lot preparation.
+- First Small House construction.
+- Android crouch-near-block status display.
+
+v1.0.17 changes:
+- Fresh UUIDs for clean Android import beside older builds.
+- Updated manifests and script version to 1.0.17.
+- Cleaned up the Small House front wall.
+- Added a complete open doorway frame using oak logs and oak planks.
+- Added missing upper wall blocks around the doorway area.
+- Moved exterior torches away from the doorway opening.
+- Continued to avoid a real door block until door facing/permutation handling is implemented safely.
+
+Known issues / planned later:
+- Small House still uses a simple open doorway instead of a functioning door.
+- House design remains temporary and will need a real style pass.
+- Builder still uses vanilla wandering outside active work.

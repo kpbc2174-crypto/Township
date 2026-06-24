@@ -1,0 +1,30 @@
+Township v1.0.51
+
+Update workflow:
+- Same fixed BP/RP UUIDs retained.
+- Version bumped to 1.0.51 only.
+
+Removed outer-radius system:
+- Removed the separate 192-radius outer township logic.
+- Township now uses one active radius: 96.
+- Claim radius and build radius are both 96.
+- Minimum distance between township centers is now based on the single 96-radius township.
+- Removed the blocking full-township support-fill phase from founding setup.
+- Removed user-facing outer-boundary wording.
+
+Town setup:
+- Founding setup now starts directly with the proven town-area clear/level/fence/gate-road phases.
+- Keeps the command-based /tickingarea add circle system from v1.0.48.
+- Keeps the 16-section setup structure, but all sections now operate inside the single 96-radius township.
+
+Automation:
+- Auto-place search rings now stay inside the single township radius.
+- Auto-placement still favors clustering near existing lots and nearby roads.
+- Auto-facing still tries to face a nearby Township Dirt Road first, otherwise faces town center.
+- Wall reserve remains protected.
+
+Unchanged:
+- Lot marker height rules.
+- Ground-level rules.
+- Building templates.
+- Starter camp behavior.

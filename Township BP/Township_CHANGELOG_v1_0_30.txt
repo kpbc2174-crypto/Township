@@ -1,0 +1,25 @@
+Township CHANGELOG v1.0.30
+
+Pack identity / update workflow:
+- Same fixed BP/RP/module UUIDs retained from the v1.0.25+ update workflow.
+- Only manifest/module/dependency versions were bumped to 1.0.30.
+
+Bug fixes:
+- Founding Stone town-prep clear pass now clears up to 64 blocks above the founding level.
+- Founding Stone town-prep clear entries now explicitly clear old Township Lot Marker blocks in the prep area.
+- Town prep work speed increased.
+- Door/bed placement changed back to verified Bedrock IDs/states from the reference notes: minecraft:wooden_door with minecraft:cardinal_direction and minecraft:bed with direction/head_piece_bit.
+
+New feature:
+- Added Township Build Recorder block.
+- Internal ID: township:build_recorder.
+- Place it at the front-center of a hand-built lot.
+- Crouch near it or tap/use it to open an ActionFormData UI.
+- UI options: Save Small Lot, Save Medium Lot, Save Large Lot, Preview Small/Medium/Large Area, Export Build Data, Clear Saved Capture.
+- Captures non-air blocks in relative lot coordinates for copy/paste export.
+- Intended workflow: build by hand in-game, capture/export the layout, paste the exported chunks back into chat, then convert it into a real Township building template.
+
+Test notes:
+- Test Founding Stone over old Lot Marker blocks and confirm the prep pass removes them.
+- Test doors and beds in newly built structures.
+- Place a Township Build Recorder, build behind it, capture a small lot, and export the saved data.

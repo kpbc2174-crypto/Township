@@ -1,0 +1,28 @@
+Township v1.0.41
+
+Update method:
+- Same fixed pack UUID identity retained.
+- Version bumped to 1.0.41 only.
+
+Changes:
+- Increased the township usable/build radius to 192.
+- Auto lot placement now searches farther out so the larger township area can be used.
+- Added active job ticking areas for lot prep, building construction, and road jobs.
+- A lot job keeps its work zone loaded through prep/build/road work instead of unloading between phases.
+- Block placement no longer advances the job index when the block set fails; this should stop jobs from saying complete while chunks were not actually changed.
+- Added a verification pass before lot prep, buildings, or roads can mark complete. Missing core blocks make the job retry instead of falsely completing.
+- Changed the founding population: the pack no longer spawns a visible Township Builder. It now spawns two ordinary vanilla villagers, while construction remains script-driven.
+- Added a vanilla bell to the main/starter lot.
+- Moved the main/starter road loop outside the main lot fence instead of inside it.
+
+Unchanged intentionally:
+- No lot marker height change.
+- No ground-level rule change.
+- No lot placement rule change.
+- No building-template redesign in this pass.
+
+Test:
+- Import over v1.0.40.
+- Place a fresh Founding Stone.
+- Confirm quadrant setup finishes, the main lot builds, the bell appears, and two villagers spawn.
+- Turn Auto Place Lots on and confirm lots do not mark complete unless visible builds/roads actually appear.

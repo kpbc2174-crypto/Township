@@ -1,0 +1,30 @@
+Township v1.0.43
+
+Update method:
+- Same fixed BP/RP/module UUIDs as prior Township builds.
+- Version bumped to 1.0.43 only.
+
+Changed:
+- Initial township setup no longer freezes on a failed block placement.
+- Every attempted setup block now advances the setup cursor whether placement succeeds or fails.
+- Skipped setup blocks now report exact diagnostics: section, phase, x/y/z, and target block.
+- The skipped-block message is throttled so chat does not spam every single failed coordinate.
+- Setup completion now reports the total skipped setup block count.
+- Repaired the air pocket under the Township Founding Stone: town setup now fills the support block at Founding Stone Y - 1 with dirt.
+- Leveling no longer skips the support column under the Founding Stone.
+
+Verified/kept:
+- 16 setup sections still cover the township setup/boundary area from negative edge through positive edge.
+- No township radius change.
+- No lot marker height change.
+- No ground-level rule change.
+- No lot placement rule change.
+- No building template change.
+- Villagers remain delayed until setup and the starter/main lot complete.
+
+Test:
+1. Place a fresh Township Founding Stone.
+2. Watch setup progress through all 16 sections.
+3. If a block cannot be placed, confirm it logs coordinates once and continues instead of freezing.
+4. Confirm the Founding Stone has dirt directly underneath it after setup.
+5. Confirm setup reaches boundary complete and then proceeds to the starter/main lot.

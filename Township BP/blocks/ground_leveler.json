@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:block": {
+    "description": {
+      "identifier": "township:ground_leveler",
+      "menu_category": {
+        "category": "construction",
+        "group": "minecraft:itemGroup.name.stone"
+      }
+    },
+    "components": {
+      "minecraft:display_name": "tile.township:ground_leveler.name",
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "township_ground_leveler",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:map_color": "#6E7F54",
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 1.0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 4.0
+      }
+    }
+  }
+}

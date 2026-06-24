@@ -1,0 +1,41 @@
+Township v1.0.53
+
+Versioning:
+- Same fixed UUID update workflow retained.
+- BP/RP manifest versions bumped to 1.0.53.
+
+New Build Lot recorder system:
+- Added Township Small Build Lot.
+- Added Township Medium Build Lot.
+- Added Township Large Build Lot.
+- These are special blank lot blocks, not generic recorders.
+- Each Build Lot block is placed where the normal lot marker goes.
+- When placed inside a township, it registers a blank lot, queues normal lot prep, builds the lot border/fence, and does not auto-build a structure.
+
+Build Lot UI:
+- Set Name / Capture Height.
+- Save Build.
+- Export Saved Build.
+- Clear Saved Build.
+- Clear Physical Lot.
+- Show Lot Info.
+
+Capture settings:
+- Capture Down Range controls how far below the lot floor is saved.
+- Capture Up Range controls how far above the lot floor is saved.
+- The Y settings do not shift the build. They only control the vertical snapshot area.
+
+Export:
+- Saved builds export as numbered JSON chunks in chat.
+- Export chunks are also sent to the Debug Log Reader hook if installed.
+- Export includes build name, lot size, facing, capture ranges, base Y, relative block coordinates, block IDs, and block states when readable.
+
+Clear behavior:
+- Clear Saved Build deletes only the stored snapshot.
+- Clear Physical Lot clears the build area and restores the blank lot floor while keeping the recorder block and lot border.
+
+Kept:
+- Single township radius: 96.
+- Command-based ticking areas.
+- Existing road/queue changes from v1.0.52.
+- Existing building templates.
