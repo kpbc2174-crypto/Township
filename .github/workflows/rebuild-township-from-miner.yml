@@ -1,0 +1,26 @@
+name: Rebuild Township Source
+
+on:
+  push:
+    paths:
+      - 'tools/rebuild_township_from_miner.py'
+      - '.github/workflows/rebuild-township-from-miner.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild source tree from miner library
+        run: python tools/rebuild_township_from_miner.py
+      - name: Commit rebuilt add-on files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "Township BP" "Township RP"
+          git diff --cached --quiet || git commit -m "Rebuild Township v1.0.85 source tree"
+          git push
