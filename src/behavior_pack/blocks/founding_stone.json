@@ -9,6 +9,7 @@
       }
     },
     "components": {
+      "township:founding_stone_component": {},
       "minecraft:display_name": "tile.township:founding_stone.name",
       "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
