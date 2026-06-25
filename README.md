@@ -2,11 +2,19 @@
 
 Minecraft Bedrock Add-On source repository.
 
-Current baseline: **v1.0.84**, the confirmed working recovery build restored from the known-working v1.0.63 line.
+## Active source
 
-Repository layout:
-- `Township BP/` — Behavior Pack source
-- `Township RP/` — Resource Pack source
-- `docs/` — project notes and release records
+- `Township BP/` — Behavior Pack source and Script API code.
+- `Township RP/` — Resource Pack source and assets.
 
-Source-control rule: future Township builds start from this baseline, preserve the established pack UUIDs, and include a complete changelog entry describing every changed file and test result.
+These are direct Bedrock pack roots. They remain at the repository root so a release package can be built from them without a staging copy.
+
+## Project support
+
+- `docs/PROJECT_STRUCTURE.md` — current pack and repository layout.
+- `docs/DEVELOPMENT_WORKFLOW.md` — one-feature-at-a-time change process.
+- `docs/UUID_REGISTRY.md` — pack identity values that normal updates preserve.
+- `docs/TEST_LOG.md` — test record format and current checkpoint.
+- `tools/validate_addon.py` — local JSON and BP/RP dependency validation.
+
+Generated `.mcaddon` and `.mcpack` files are intentionally ignored. The repository holds source, not export copies.
