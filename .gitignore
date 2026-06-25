@@ -1,0 +1,11 @@
+# Generated add-on packages
+*.mcaddon
+*.mcpack
+
+# Temporary build output
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
