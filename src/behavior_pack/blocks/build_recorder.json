@@ -9,6 +9,7 @@
       }
     },
     "components": {
+      "township:build_recorder_component": {},
       "minecraft:display_name": "tile.township:build_recorder.name",
       "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
