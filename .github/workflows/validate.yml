@@ -1,0 +1,16 @@
+name: Validate Township
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/validate_addon.py
+      - run: node --check src/behavior_pack/scripts/main.js
+      - run: node --check src/behavior_pack/scripts/app/runtime.js
+      - run: node --check src/behavior_pack/scripts/shared/debug_log_bridge.js
+      - run: node --check src/behavior_pack/scripts/core/version.js
