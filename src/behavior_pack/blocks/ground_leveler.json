@@ -9,6 +9,7 @@
       }
     },
     "components": {
+      "township:ground_leveler_component": {},
       "minecraft:display_name": "tile.township:ground_leveler.name",
       "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
