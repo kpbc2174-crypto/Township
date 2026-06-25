@@ -9,6 +9,7 @@
       }
     },
     "components": {
+      "township:lot_marker_component": {},
       "minecraft:display_name": "tile.township:large_lot_marker.name",
       "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
