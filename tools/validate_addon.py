@@ -1,53 +1,28 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
-BP = Path("Township BP")
-RP = Path("Township RP")
+BP = Path("src/behavior_pack")
+RP = Path("src/resource_pack")
 
-
-def fail(message: str) -> None:
-    print(f"ERROR: {message}")
-    raise SystemExit(1)
-
-
-def load_json(path: Path) -> dict:
+def load_json(path: Path):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except Exception as exc:
-        fail(f"Invalid JSON: {path}: {exc}")
-
+    except Exception as error:
+        raise SystemExit(f"Invalid JSON: {path}: {error}")
 
 def main() -> None:
-    for root in (BP, RP):
-        if not root.is_dir():
-            fail(f"Missing pack root: {root}")
-        if not (root / "manifest.json").is_file():
-            fail(f"Missing manifest: {root / 'manifest.json'}")
-
-    bp_manifest = load_json(BP / "manifest.json")
-    rp_manifest = load_json(RP / "manifest.json")
-
-    bp_uuid = bp_manifest["header"]["uuid"]
-    rp_uuid = rp_manifest["header"]["uuid"]
-
-    bp_dependencies = {item.get("uuid") for item in bp_manifest.get("dependencies", [])}
-    rp_dependencies = {item.get("uuid") for item in rp_manifest.get("dependencies", [])}
-    if rp_uuid not in bp_dependencies:
-        fail("Behavior Pack does not depend on the Resource Pack UUID.")
-    if bp_uuid not in rp_dependencies:
-        fail("Resource Pack does not depend on the Behavior Pack UUID.")
-
-    count = 0
+    bp = load_json(BP / "manifest.json")
+    rp = load_json(RP / "manifest.json")
+    if rp["header"]["uuid"] not in {x.get("uuid") for x in bp.get("dependencies", [])}:
+        raise SystemExit("BP does not depend on the RP UUID.")
+    if bp["header"]["uuid"] not in {x.get("uuid") for x in rp.get("dependencies", [])}:
+        raise SystemExit("RP does not depend on the BP UUID.")
     for root in (BP, RP):
         for path in root.rglob("*.json"):
             load_json(path)
-            count += 1
-
-    print(f"Validated {count} JSON files and BP/RP manifest linking.")
-
+    print("Township JSON and BP/RP dependency validation passed.")
 
 if __name__ == "__main__":
     main()

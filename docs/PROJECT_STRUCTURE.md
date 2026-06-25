@@ -1,42 +1,25 @@
 # Township Project Structure
 
-## Active Minecraft source
+## Source roots
 
-- `Township BP/` — Behavior Pack source. Keep this as the real Bedrock pack root so it can be packaged directly.
-- `Township RP/` — Resource Pack source. Keep this as the real Bedrock pack root so it can be packaged directly.
+- `src/behavior_pack/` is the editable Behavior Pack source.
+- `src/resource_pack/` is the editable Resource Pack source.
 
-Do not put recovery archives, readable Miner exports, Base64 files, or generated `.mcaddon` packages inside either pack.
+The build tool packages those two roots as `Township BP/` and `Township RP/` inside the `.mcaddon`.
 
-## Behavior Pack layout
+## Script layout
 
-- `manifest.json` — pack identity and Script API dependencies.
-- `blocks/` — custom block definitions.
-- `item_catalog/` — creative catalog entries.
-- `scripts/main.js` — only Script API entry point.
-- `scripts/` — shared Script API code.
+- `scripts/main.js` is the stable Script API entry point.
+- `scripts/app/runtime.js` contains the current runtime until individual systems are migrated.
+- `scripts/core/` is for versioning and shared project state.
+- `scripts/shared/` is for reusable helpers.
+- `scripts/systems/` is for township systems.
+- `scripts/ui/` is for forms.
 
-As Township grows, new script modules belong under these directories while `scripts/main.js` remains the entry point:
+## Repository support
 
-- `scripts/core/` — startup, versioning, world state, registry access.
-- `scripts/systems/` — township founding, lots, roads, builders, terrain preparation, resources.
-- `scripts/ui/` — forms and UI routing.
-- `scripts/shared/` — debug bridge, constants, safe helpers, formatting.
+- `docs/` stores project records.
+- `tools/` stores repeatable validation and packaging helpers.
+- `.github/workflows/` stores validation automation only.
 
-Move one working system at a time from `main.js`; do not refactor the whole script as an untested migration.
-
-## Resource Pack layout
-
-- `manifest.json` — Resource Pack identity and BP dependency.
-- `textures/blocks/` — block textures.
-- `textures/terrain_texture.json` — terrain atlas registrations.
-- `texts/` — language files.
-
-Future resource content uses normal Bedrock folders only when needed: `models/`, `entity/`, `animations/`, `animation_controllers/`, `render_controllers/`, `attachables/`, `particles/`, `sounds/`, `fogs/`, and `biomes/`.
-
-## Repository support files
-
-- `docs/` — architecture, UUID registry, changelog, workflow, and test records.
-- `tools/` — repeatable validation/build helpers only.
-- `.github/workflows/` — repository validation only.
-
-Keep the repository root clean. No generated `.mcaddon` files, no temporary import files, and no unrelated Miner exports.
+Do not store generated packages, Miner exports, Base64 dumps, or temporary import files in this repository.

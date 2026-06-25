@@ -1,11 +1,13 @@
 # Township Development Workflow
 
-1. Change one feature at a time.
-2. Work only from `Township BP/` and `Township RP/`.
-3. Preserve BP and RP UUIDs for normal updates.
-4. Update the pack versions and script version together.
-5. Validate files before packaging.
-6. Test on the target Bedrock Android version.
-7. Record changed paths, test result, enabled experiments, and Content Log output in `docs/TEST_LOG.md`.
+1. Select one feature.
+2. Verify the Bedrock requirement.
+3. Change only the required files.
+4. Keep BP/RP UUIDs unchanged for normal updates.
+5. Update both pack versions and `scripts/core/version.js`.
+6. Validate source.
+7. Package the add-on.
+8. Test on the target Android Bedrock version.
+9. Record changed files, experiments, result, and Content Log output.
 
-Do not combine system changes, API migration, and broad reorganization in the same test build.
+Do not combine gameplay work with broad file reorganization.
