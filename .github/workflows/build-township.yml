@@ -1,0 +1,52 @@
+name: Build Township Add-On
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate manifests
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for path in [
+              Path("src/behavior_pack/manifest.json"),
+              Path("src/resource_pack/manifest.json"),
+          ]:
+              if not path.is_file():
+                  raise SystemExit(f"Missing required manifest: {path}")
+              json.loads(path.read_text(encoding="utf-8"))
+          PY
+
+      - name: Check script syntax
+        run: |
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find src/behavior_pack/scripts -type f -name '*.js' -print0)
+
+      - name: Build mcaddon
+        run: |
+          rm -rf dist staging
+          mkdir -p "staging/Township BP" "staging/Township RP" dist
+          cp -a src/behavior_pack/. "staging/Township BP/"
+          cp -a src/resource_pack/. "staging/Township RP/"
+          (
+            cd staging
+            zip -qr ../dist/Township.mcaddon "Township BP" "Township RP"
+          )
+
+      - name: Upload mcaddon
+        uses: actions/upload-artifact@v4
+        with:
+          name: Township-mcaddon
+          path: dist/Township.mcaddon
+          if-no-files-found: error
+          retention-days: 14
