@@ -1,6 +1,9 @@
 name: Repair Township Refactor
 
 on:
+  push:
+    paths:
+      - .github/workflows/main.yml
   workflow_dispatch:
 
 permissions:
@@ -17,7 +20,7 @@ jobs:
 
       - name: Repair split-module wiring
         run: |
-          python3 <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
 
           runtime_path = Path("src/behavior_pack/scripts/app/runtime.js")
@@ -28,20 +31,14 @@ jobs:
           plans = plans_path.read_text(encoding="utf-8")
           state = state_path.read_text(encoding="utf-8")
 
-          runtime_old = """  addBlockEntry,
-  lotPathOffset: LOT_PATH_OFFSET,"""
-          runtime_new = """  addBlockEntry,
-  hashStringNumber,
-  lotPathOffset: LOT_PATH_OFFSET,"""
+          runtime_old = "  addBlockEntry,\n  lotPathOffset: LOT_PATH_OFFSET,"
+          runtime_new = "  addBlockEntry,\n  hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,"
           if runtime_old not in runtime:
               raise SystemExit("Expected createBuildingPlans dependency block was not found in runtime.js")
           runtime = runtime.replace(runtime_old, runtime_new, 1)
 
-          plans_old = """  addBlockEntry,
-  lotPathOffset,"""
-          plans_new = """  addBlockEntry,
-  hashStringNumber,
-  lotPathOffset,"""
+          plans_old = "  addBlockEntry,\n  lotPathOffset,"
+          plans_new = "  addBlockEntry,\n  hashStringNumber,\n  lotPathOffset,"
           if plans_old not in plans:
               raise SystemExit("Expected createBuildingPlans parameter block was not found in building_plans.js")
           plans = plans.replace(plans_old, plans_new, 1)
@@ -51,23 +48,13 @@ jobs:
               raise SystemExit("Expected auto-variant expression was not found in building_plans.js")
           plans = plans.replace(old_variant, 'hashStringNumber(lot?.id ?? "")', 1)
 
-          state_old = """  CLAIM_RADIUS,
-  STARTING_BUILD_RADIUS,"""
-          state_new = """  CLAIM_RADIUS,
-  MIN_TOWN_DISTANCE,
-  STARTING_BUILD_RADIUS,"""
+          state_old = "  CLAIM_RADIUS,\n  STARTING_BUILD_RADIUS,"
+          state_new = "  CLAIM_RADIUS,\n  MIN_TOWN_DISTANCE,\n  STARTING_BUILD_RADIUS,"
           if state_old not in state:
               raise SystemExit("Expected constants import block was not found in runtime_state.js")
           state = state.replace(state_old, state_new, 1)
 
-          leftover = """const buildingPlans = createBuildingPlans({
-  transformFromBackAnchor,
-  directionStateNumber,
-  addBlockEntry,
-  lotPathOffset: LOT_PATH_OFFSET,
-  lotSmallHalf: LOT_SMALL_HALF,
-  lotSmallSize: LOT_SMALL_SIZE
-});"""
+          leftover = "const buildingPlans = createBuildingPlans({\n  transformFromBackAnchor,\n  directionStateNumber,\n  addBlockEntry,\n  lotPathOffset: LOT_PATH_OFFSET,\n  lotSmallHalf: LOT_SMALL_HALF,\n  lotSmallSize: LOT_SMALL_SIZE\n});"
           state = state.replace(leftover, "", 1)
 
           runtime_path.write_text(runtime, encoding="utf-8")
@@ -77,17 +64,16 @@ jobs:
 
       - name: Verify repaired module links
         run: |
-          python3 <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
           runtime = Path("src/behavior_pack/scripts/app/runtime.js").read_text(encoding="utf-8")
           plans = Path("src/behavior_pack/scripts/systems/building_plans.js").read_text(encoding="utf-8")
           state = Path("src/behavior_pack/scripts/core/runtime_state.js").read_text(encoding="utf-8")
 
-          required_runtime = [
+          for text in (
               'import { createBuildingPlans } from "../systems/building_plans.js";',
               'hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,'
-          ]
-          for text in required_runtime:
+          ):
               if text not in runtime:
                   raise SystemExit(f"runtime.js verification failed: {text}")
           if 'hashStringNumber(lot?.id ?? "")' not in plans:
