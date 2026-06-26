@@ -1,4 +1,4 @@
-name: Promote Runtime
+name: Repair Township Refactor
 
 on:
   workflow_dispatch:
@@ -7,40 +7,105 @@ permissions:
   contents: write
 
 jobs:
-  promote:
+  repair:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - run: |
-          cp runtime.txt src/behavior_pack/scripts/app/runtime.js
-          cp building_plans.txt src/behavior_pack/scripts/systems/building_plans.js
-
-          rm -f runtime.txt building_plans.txt \
-            _tree_probe.txt scratch.txt zzz __stop__.txt please_no_more.txt \
-            ignore_this.txt ignore_again.txt last_ignore.txt do_not_use.txt \
-            a.txt do_not_create.txt never.txt why.txt stop.txt final_stop.txt
-
-      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Activate split Township runtime modules
-          file_pattern: >
-            src/behavior_pack/scripts/app/runtime.js
-            src/behavior_pack/scripts/systems/building_plans.js
-            runtime.txt
-            building_plans.txt
-            _tree_probe.txt
-            scratch.txt
-            zzz
-            __stop__.txt
-            please_no_more.txt
-            ignore_this.txt
-            ignore_again.txt
-            last_ignore.txt
-            do_not_use.txt
-            a.txt
-            do_not_create.txt
-            never.txt
-            why.txt
-            stop.txt
-            final_stop.txt
+          ref: main
+          persist-credentials: true
+
+      - name: Repair split-module wiring
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          runtime_path = Path("src/behavior_pack/scripts/app/runtime.js")
+          plans_path = Path("src/behavior_pack/scripts/systems/building_plans.js")
+          state_path = Path("src/behavior_pack/scripts/core/runtime_state.js")
+
+          runtime = runtime_path.read_text(encoding="utf-8")
+          plans = plans_path.read_text(encoding="utf-8")
+          state = state_path.read_text(encoding="utf-8")
+
+          runtime_old = """  addBlockEntry,
+  lotPathOffset: LOT_PATH_OFFSET,"""
+          runtime_new = """  addBlockEntry,
+  hashStringNumber,
+  lotPathOffset: LOT_PATH_OFFSET,"""
+          if runtime_old not in runtime:
+              raise SystemExit("Expected createBuildingPlans dependency block was not found in runtime.js")
+          runtime = runtime.replace(runtime_old, runtime_new, 1)
+
+          plans_old = """  addBlockEntry,
+  lotPathOffset,"""
+          plans_new = """  addBlockEntry,
+  hashStringNumber,
+  lotPathOffset,"""
+          if plans_old not in plans:
+              raise SystemExit("Expected createBuildingPlans parameter block was not found in building_plans.js")
+          plans = plans.replace(plans_old, plans_new, 1)
+
+          old_variant = "hashStringNumber(lot?.id ?? tickCounter)"
+          if old_variant not in plans:
+              raise SystemExit("Expected auto-variant expression was not found in building_plans.js")
+          plans = plans.replace(old_variant, 'hashStringNumber(lot?.id ?? "")', 1)
+
+          state_old = """  CLAIM_RADIUS,
+  STARTING_BUILD_RADIUS,"""
+          state_new = """  CLAIM_RADIUS,
+  MIN_TOWN_DISTANCE,
+  STARTING_BUILD_RADIUS,"""
+          if state_old not in state:
+              raise SystemExit("Expected constants import block was not found in runtime_state.js")
+          state = state.replace(state_old, state_new, 1)
+
+          leftover = """const buildingPlans = createBuildingPlans({
+  transformFromBackAnchor,
+  directionStateNumber,
+  addBlockEntry,
+  lotPathOffset: LOT_PATH_OFFSET,
+  lotSmallHalf: LOT_SMALL_HALF,
+  lotSmallSize: LOT_SMALL_SIZE
+});"""
+          state = state.replace(leftover, "", 1)
+
+          runtime_path.write_text(runtime, encoding="utf-8")
+          plans_path.write_text(plans, encoding="utf-8")
+          state_path.write_text(state, encoding="utf-8")
+          PY
+
+      - name: Verify repaired module links
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          runtime = Path("src/behavior_pack/scripts/app/runtime.js").read_text(encoding="utf-8")
+          plans = Path("src/behavior_pack/scripts/systems/building_plans.js").read_text(encoding="utf-8")
+          state = Path("src/behavior_pack/scripts/core/runtime_state.js").read_text(encoding="utf-8")
+
+          required_runtime = [
+              'import { createBuildingPlans } from "../systems/building_plans.js";',
+              'hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,'
+          ]
+          for text in required_runtime:
+              if text not in runtime:
+                  raise SystemExit(f"runtime.js verification failed: {text}")
+          if 'hashStringNumber(lot?.id ?? "")' not in plans:
+              raise SystemExit("building_plans.js verification failed")
+          if 'MIN_TOWN_DISTANCE' not in state:
+              raise SystemExit("runtime_state.js verification failed")
+          if 'createBuildingPlans({' in state:
+              raise SystemExit("runtime_state.js still contains a building-plan factory block")
+          PY
+
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/behavior_pack/scripts/app/runtime.js src/behavior_pack/scripts/systems/building_plans.js src/behavior_pack/scripts/core/runtime_state.js
+          if git diff --cached --quiet; then
+            echo "No repair changes were needed."
+            exit 0
+          fi
+          git commit -m "Repair Township split module wiring"
+          git push origin HEAD:main
