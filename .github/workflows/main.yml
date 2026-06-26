@@ -18,18 +18,16 @@ jobs:
           ref: main
           persist-credentials: true
 
-      - name: Repair split-module wiring
+      - name: Repair building-plan dependency wiring
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
           runtime_path = Path("src/behavior_pack/scripts/app/runtime.js")
           plans_path = Path("src/behavior_pack/scripts/systems/building_plans.js")
-          state_path = Path("src/behavior_pack/scripts/core/runtime_state.js")
 
           runtime = runtime_path.read_text(encoding="utf-8")
           plans = plans_path.read_text(encoding="utf-8")
-          state = state_path.read_text(encoding="utf-8")
 
           runtime_old = "  addBlockEntry,\n  lotPathOffset: LOT_PATH_OFFSET,"
           runtime_new = "  addBlockEntry,\n  hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,"
@@ -48,18 +46,8 @@ jobs:
               raise SystemExit("Expected auto-variant expression was not found in building_plans.js")
           plans = plans.replace(old_variant, 'hashStringNumber(lot?.id ?? "")', 1)
 
-          state_old = "  CLAIM_RADIUS,\n  STARTING_BUILD_RADIUS,"
-          state_new = "  CLAIM_RADIUS,\n  MIN_TOWN_DISTANCE,\n  STARTING_BUILD_RADIUS,"
-          if state_old not in state:
-              raise SystemExit("Expected constants import block was not found in runtime_state.js")
-          state = state.replace(state_old, state_new, 1)
-
-          leftover = "const buildingPlans = createBuildingPlans({\n  transformFromBackAnchor,\n  directionStateNumber,\n  addBlockEntry,\n  lotPathOffset: LOT_PATH_OFFSET,\n  lotSmallHalf: LOT_SMALL_HALF,\n  lotSmallSize: LOT_SMALL_SIZE\n});"
-          state = state.replace(leftover, "", 1)
-
           runtime_path.write_text(runtime, encoding="utf-8")
           plans_path.write_text(plans, encoding="utf-8")
-          state_path.write_text(state, encoding="utf-8")
           PY
 
       - name: Verify repaired module links
@@ -68,30 +56,23 @@ jobs:
           from pathlib import Path
           runtime = Path("src/behavior_pack/scripts/app/runtime.js").read_text(encoding="utf-8")
           plans = Path("src/behavior_pack/scripts/systems/building_plans.js").read_text(encoding="utf-8")
-          state = Path("src/behavior_pack/scripts/core/runtime_state.js").read_text(encoding="utf-8")
 
-          for text in (
-              'import { createBuildingPlans } from "../systems/building_plans.js";',
-              'hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,'
-          ):
-              if text not in runtime:
-                  raise SystemExit(f"runtime.js verification failed: {text}")
+          if 'import { createBuildingPlans } from "../systems/building_plans.js";' not in runtime:
+              raise SystemExit("runtime.js is missing building_plans import")
+          if 'hashStringNumber,\n  lotPathOffset: LOT_PATH_OFFSET,' not in runtime:
+              raise SystemExit("runtime.js is missing hashStringNumber dependency wiring")
           if 'hashStringNumber(lot?.id ?? "")' not in plans:
-              raise SystemExit("building_plans.js verification failed")
-          if 'MIN_TOWN_DISTANCE' not in state:
-              raise SystemExit("runtime_state.js verification failed")
-          if 'createBuildingPlans({' in state:
-              raise SystemExit("runtime_state.js still contains a building-plan factory block")
+              raise SystemExit("building_plans.js auto-variant expression was not repaired")
           PY
 
       - name: Commit repair
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/behavior_pack/scripts/app/runtime.js src/behavior_pack/scripts/systems/building_plans.js src/behavior_pack/scripts/core/runtime_state.js
+          git add src/behavior_pack/scripts/app/runtime.js src/behavior_pack/scripts/systems/building_plans.js
           if git diff --cached --quiet; then
             echo "No repair changes were needed."
             exit 0
           fi
-          git commit -m "Repair Township split module wiring"
+          git commit -m "Repair Township building plan module wiring"
           git push origin HEAD:main
