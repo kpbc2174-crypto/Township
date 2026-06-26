@@ -2,29 +2,29 @@
   "format_version": 2,
   "header": {
     "name": "Township BP",
-    "description": "Township v1.0.85 stable Script API update",
+    "description": "Township v1.0.88 stable Script API update",
     "uuid": "efb55785-5680-46d8-b4c7-8f8a2cddf364",
-    "version": [1, 0, 85],
+    "version": [1, 0, 88],
     "min_engine_version": [1, 21, 90]
   },
   "modules": [
     {
       "type": "data",
       "uuid": "7e320f0f-f615-4230-8b83-e6a0ffdc87cd",
-      "version": [1, 0, 85]
+      "version": [1, 0, 88]
     },
     {
       "type": "script",
       "language": "javascript",
       "entry": "scripts/main.js",
       "uuid": "0546c591-16c9-4f60-bc44-fec4a749892c",
-      "version": [1, 0, 85]
+      "version": [1, 0, 88]
     }
   ],
   "dependencies": [
     {
       "uuid": "6effc74f-a22d-46d5-95f2-778c00fdfb9b",
-      "version": [1, 0, 85]
+      "version": [1, 0, 88]
     },
     {
       "module_name": "@minecraft/server",
