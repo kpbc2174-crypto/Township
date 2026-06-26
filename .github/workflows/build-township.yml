@@ -4,19 +4,23 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
 
-      - name: Read and validate pack version
+      - name: Increment pack version
         id: version
         run: |
           python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
 
           bp_path = Path("src/behavior_pack/manifest.json")
@@ -24,14 +28,31 @@ jobs:
           bp = json.loads(bp_path.read_text(encoding="utf-8"))
           rp = json.loads(rp_path.read_text(encoding="utf-8"))
 
-          bp_version = bp["header"]["version"]
-          rp_version = rp["header"]["version"]
-          if bp_version != rp_version:
-              raise SystemExit(f"BP/RP version mismatch: {bp_version} vs {rp_version}")
+          current = bp["header"]["version"]
+          if current != rp["header"]["version"]:
+              raise SystemExit(f"BP/RP header version mismatch: {current} vs {rp['header']['version']}")
+          if len(current) != 3 or not all(isinstance(part, int) for part in current):
+              raise SystemExit(f"Invalid semantic version: {current}")
 
-          version = ".".join(map(str, bp_version))
-          filename = "Township_v" + "_".join(map(str, bp_version)) + ".mcaddon"
-          with open("$GITHUB_OUTPUT", "a", encoding="utf-8") as output:
+          next_version = [current[0], current[1], current[2] + 1]
+          for manifest, own_uuid, linked_uuid in (
+              (bp, bp["header"]["uuid"], rp["header"]["uuid"]),
+              (rp, rp["header"]["uuid"], bp["header"]["uuid"]),
+          ):
+              manifest["header"]["version"] = next_version
+              manifest["header"]["description"] = f"Township v{'.'.join(map(str, next_version))} stable Script API update"
+              for module in manifest.get("modules", []):
+                  module["version"] = next_version
+              for dependency in manifest.get("dependencies", []):
+                  if dependency.get("uuid") == linked_uuid:
+                      dependency["version"] = next_version
+
+          bp_path.write_text(json.dumps(bp, indent=2) + "\n", encoding="utf-8")
+          rp_path.write_text(json.dumps(rp, indent=2) + "\n", encoding="utf-8")
+
+          version = ".".join(map(str, next_version))
+          filename = "Township_v" + "_".join(map(str, next_version)) + ".mcaddon"
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
               output.write(f"version={version}\n")
               output.write(f"filename={filename}\n")
           PY
@@ -61,3 +82,11 @@ jobs:
           path: dist/${{ steps.version.outputs.filename }}
           if-no-files-found: error
           retention-days: 14
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/behavior_pack/manifest.json src/resource_pack/manifest.json
+          git commit -m "Bump Township to v${{ steps.version.outputs.version }}"
+          git push origin HEAD:main
