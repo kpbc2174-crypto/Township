@@ -10,16 +10,8 @@ function normalizeBounds(bounds) {
   if (!bounds) return undefined;
   const y = Math.floor(bounds.y ?? bounds.testY ?? 64);
   return {
-    from: {
-      x: Math.floor(bounds.minX),
-      y,
-      z: Math.floor(bounds.minZ)
-    },
-    to: {
-      x: Math.floor(bounds.maxX),
-      y,
-      z: Math.floor(bounds.maxZ)
-    }
+    from: { x: Math.floor(bounds.minX), y, z: Math.floor(bounds.minZ) },
+    to: { x: Math.floor(bounds.maxX), y, z: Math.floor(bounds.maxZ) }
   };
 }
 
@@ -30,7 +22,6 @@ export function requestTownshipTickingArea({
   target,
   label,
   tick,
-  readyDelayTicks,
   reportError,
   reportMessage
 }) {
@@ -51,11 +42,7 @@ export function requestTownshipTickingArea({
   }
 
   const manager = world.tickingAreaManager;
-  const options = {
-    dimension,
-    from: areaBounds.from,
-    to: areaBounds.to
-  };
+  const options = { dimension, from: areaBounds.from, to: areaBounds.to };
 
   try {
     if (manager.hasTickingArea(identifier)) {
@@ -75,7 +62,9 @@ export function requestTownshipTickingArea({
         target.loadListStatus = "managed";
         target.loadState = "waiting";
         target.loadCommandDoneTick = tick;
-        target.tickingAreaReadyTick = tick + readyDelayTicks;
+        // createTickingArea resolves only after the area is loaded and ticking.
+        // The caller still performs a writable probe before starting world edits.
+        target.tickingAreaReadyTick = 0;
       })
       .catch((error) => {
         target.loadState = "failed";
