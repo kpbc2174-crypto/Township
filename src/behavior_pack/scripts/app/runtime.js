@@ -169,6 +169,7 @@ const buildingPlans = createBuildingPlans({
   transformFromBackAnchor,
   directionStateNumber,
   addBlockEntry,
+  hashStringNumber,
   lotPathOffset: LOT_PATH_OFFSET,
   lotSmallHalf: LOT_SMALL_HALF,
   lotSmallSize: LOT_SMALL_SIZE

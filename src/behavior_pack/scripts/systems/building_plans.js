@@ -6,6 +6,7 @@ export function createBuildingPlans({
   transformFromBackAnchor,
   directionStateNumber,
   addBlockEntry,
+  hashStringNumber,
   lotPathOffset,
   lotSmallHalf,
   lotSmallSize
@@ -31,7 +32,7 @@ export function createBuildingPlans({
 
   function chooseAutoBuildingVariant(lot) {
     const variants = getBuildingVariantsForLot(lot);
-    const index = hashStringNumber(lot?.id ?? tickCounter) % variants.length;
+    const index = hashStringNumber(lot?.id ?? "") % variants.length;
     return variants[index];
   }
 
