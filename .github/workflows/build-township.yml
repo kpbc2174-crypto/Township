@@ -12,18 +12,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate manifests
+      - name: Read and validate pack version
+        id: version
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
-          for path in [
-              Path("src/behavior_pack/manifest.json"),
-              Path("src/resource_pack/manifest.json"),
-          ]:
-              if not path.is_file():
-                  raise SystemExit(f"Missing required manifest: {path}")
-              json.loads(path.read_text(encoding="utf-8"))
+
+          bp_path = Path("src/behavior_pack/manifest.json")
+          rp_path = Path("src/resource_pack/manifest.json")
+          bp = json.loads(bp_path.read_text(encoding="utf-8"))
+          rp = json.loads(rp_path.read_text(encoding="utf-8"))
+
+          bp_version = bp["header"]["version"]
+          rp_version = rp["header"]["version"]
+          if bp_version != rp_version:
+              raise SystemExit(f"BP/RP version mismatch: {bp_version} vs {rp_version}")
+
+          version = ".".join(map(str, bp_version))
+          filename = "Township_v" + "_".join(map(str, bp_version)) + ".mcaddon"
+          with open("$GITHUB_OUTPUT", "a", encoding="utf-8") as output:
+              output.write(f"version={version}\n")
+              output.write(f"filename={filename}\n")
           PY
 
       - name: Check script syntax
@@ -32,7 +42,7 @@ jobs:
             node --check "$file"
           done < <(find src/behavior_pack/scripts -type f -name '*.js' -print0)
 
-      - name: Build mcaddon
+      - name: Build versioned mcaddon
         run: |
           rm -rf dist staging
           mkdir -p "staging/Township BP" "staging/Township RP" dist
@@ -40,13 +50,14 @@ jobs:
           cp -a src/resource_pack/. "staging/Township RP/"
           (
             cd staging
-            zip -qr ../dist/Township.mcaddon "Township BP" "Township RP"
+            zip -qr "../dist/${{ steps.version.outputs.filename }}" "Township BP" "Township RP"
           )
+          test -s "dist/${{ steps.version.outputs.filename }}"
 
-      - name: Upload mcaddon
+      - name: Upload versioned mcaddon
         uses: actions/upload-artifact@v4
         with:
-          name: Township-mcaddon
-          path: dist/Township.mcaddon
+          name: Township-v${{ steps.version.outputs.version }}
+          path: dist/${{ steps.version.outputs.filename }}
           if-no-files-found: error
           retention-days: 14
