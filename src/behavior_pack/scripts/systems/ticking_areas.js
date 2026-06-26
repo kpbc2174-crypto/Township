@@ -15,6 +15,12 @@ function normalizeBounds(bounds) {
   };
 }
 
+function resolveIdentifier(identifier, areaBounds) {
+  if (identifier !== "township_temp" || !areaBounds) return identifier;
+  const { from, to } = areaBounds;
+  return `township_setup_${from.x}_${from.z}_${to.x}_${to.z}`.slice(0, 60);
+}
+
 export function requestTownshipTickingArea({
   dimension,
   bounds,
@@ -27,13 +33,6 @@ export function requestTownshipTickingArea({
 }) {
   if (!dimension || !bounds || !identifier || !target) return;
 
-  target.loadState = "requesting";
-  target.loadCommandStartedTick = tick;
-  target.loadCommandDoneTick = undefined;
-  target.loadError = undefined;
-  target.loadCommandStatus = undefined;
-  target.loadListStatus = undefined;
-
   const areaBounds = normalizeBounds(bounds);
   if (!areaBounds) {
     target.loadState = "failed";
@@ -41,29 +40,43 @@ export function requestTownshipTickingArea({
     return;
   }
 
+  const resolvedIdentifier = resolveIdentifier(identifier, areaBounds);
+  if (target.tickingAreaName === identifier) target.tickingAreaName = resolvedIdentifier;
+  if (target.activeTickingAreaName === identifier) target.activeTickingAreaName = resolvedIdentifier;
+
+  // Do not persist an asynchronous-only "requesting" state. A reload between
+  // createTickingArea() and its Promise callback must be able to resume through
+  // the regular writable probe.
+  target.loadState = "waiting";
+  target.loadCommandStartedTick = tick;
+  target.loadCommandDoneTick = undefined;
+  target.tickingAreaReadyTick = 0;
+  target.loadError = undefined;
+  target.loadCommandStatus = "pending";
+  target.loadListStatus = undefined;
+
   const manager = world.tickingAreaManager;
   const options = { dimension, from: areaBounds.from, to: areaBounds.to };
 
   try {
-    if (manager.hasTickingArea(identifier)) {
-      manager.removeTickingArea(identifier);
+    if (manager.hasTickingArea(resolvedIdentifier)) {
+      manager.removeTickingArea(resolvedIdentifier);
     }
 
     if (!manager.hasCapacity(options)) {
       target.loadState = "failed";
-      target.loadError = `No ticking-area capacity for ${identifier}.`;
+      target.loadError = `No ticking-area capacity for ${resolvedIdentifier}.`;
       reportMessage?.(`§c${label} failed: ${target.loadError}`);
       return;
     }
 
-    manager.createTickingArea(identifier, options)
+    manager.createTickingArea(resolvedIdentifier, options)
       .then(() => {
         target.loadCommandStatus = "created";
         target.loadListStatus = "managed";
         target.loadState = "waiting";
         target.loadCommandDoneTick = tick;
-        // createTickingArea resolves only after the area is loaded and ticking.
-        // The caller still performs a writable probe before starting world edits.
+        // The caller confirms writable access before edits begin.
         target.tickingAreaReadyTick = 0;
       })
       .catch((error) => {
