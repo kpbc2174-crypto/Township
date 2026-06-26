@@ -1,0 +1,46 @@
+name: Promote Runtime
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          cp runtime.txt src/behavior_pack/scripts/app/runtime.js
+          cp building_plans.txt src/behavior_pack/scripts/systems/building_plans.js
+
+          rm -f runtime.txt building_plans.txt \
+            _tree_probe.txt scratch.txt zzz __stop__.txt please_no_more.txt \
+            ignore_this.txt ignore_again.txt last_ignore.txt do_not_use.txt \
+            a.txt do_not_create.txt never.txt why.txt stop.txt final_stop.txt
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Activate split Township runtime modules
+          file_pattern: >
+            src/behavior_pack/scripts/app/runtime.js
+            src/behavior_pack/scripts/systems/building_plans.js
+            runtime.txt
+            building_plans.txt
+            _tree_probe.txt
+            scratch.txt
+            zzz
+            __stop__.txt
+            please_no_more.txt
+            ignore_this.txt
+            ignore_again.txt
+            last_ignore.txt
+            do_not_use.txt
+            a.txt
+            do_not_create.txt
+            never.txt
+            why.txt
+            stop.txt
+            final_stop.txt
