@@ -1,0 +1,169 @@
+name: Apply Township Process Hardening
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  harden-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Apply runtime process repairs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("src/behavior_pack/scripts/app/runtime.js")
+          text = path.read_text(encoding="utf-8")
+
+          def replace_once(old, new, label):
+              global text
+              if old not in text:
+                  raise SystemExit(f"Expected source block not found: {label}")
+              text = text.replace(old, new, 1)
+
+          replace_once(
+              '''    const loadKey = `${job.quadrantIndex}_${phase}_${radius}`;
+    if (job.loadedPrepKey === loadKey && job.tickingAreaName) return;
+
+    removeTownPrepTickingArea(town, job, dimension);
+
+    const bounds = getTownPrepQuadrantBounds(town, job.quadrantIndex, radius);
+    const name = "township_temp";''',
+              '''    const loadKey = `${job.quadrantIndex}_${phase}_${radius}`;
+    const name = townPrepTickingAreaName(town);
+    if (job.loadedPrepKey === loadKey && job.tickingAreaName === name && job.loadState !== "failed") {
+      const manager = world.tickingAreaManager;
+      if (manager.hasTickingArea(name)) {
+        // A world reload can occur after the manager created the area but before the
+        // original Promise callback ran. Recover that persisted area instead of leaving
+        // the saved job indefinitely in "requesting".
+        if (job.loadState === "requesting") {
+          job.loadState = "waiting";
+          job.loadCommandStatus = "recovered";
+          job.loadListStatus = "managed";
+          job.tickingAreaReadyTick = 0;
+        }
+        return;
+      }
+    }
+
+    removeTownPrepTickingArea(town, job, dimension);
+
+    const bounds = getTownPrepQuadrantBounds(town, job.quadrantIndex, radius);''',
+              "town prep identifier and reload recovery"
+          )
+
+          replace_once(
+              '''    const name = activeJobTickingAreaName(town, job);
+    const key = `${bounds.minX}_${bounds.minZ}_${bounds.maxX}_${bounds.maxZ}`;
+    if (job.activeTickingAreaName === name && job.activeTickingAreaKey === key) return;
+    if (job.activeTickingAreaName) {''',
+              '''    const name = activeJobTickingAreaName(town, job);
+    const key = `${bounds.minX}_${bounds.minZ}_${bounds.maxX}_${bounds.maxZ}`;
+    if (job.activeTickingAreaName === name && job.activeTickingAreaKey === key && job.loadState !== "failed") {
+      const manager = world.tickingAreaManager;
+      if (manager.hasTickingArea(name)) {
+        if (job.loadState === "requesting") {
+          job.loadState = "waiting";
+          job.loadCommandStatus = "recovered";
+          job.loadListStatus = "managed";
+          job.tickingAreaReadyTick = 0;
+        }
+        return;
+      }
+    }
+    if (job.activeTickingAreaName) {''',
+              "active job reload recovery"
+          )
+
+          old_ready = '''      tick: runtimeState.tickCounter,
+      readyDelayTicks: TOWN_PREP_LOAD_WAIT_TICKS,
+      reportError:'''
+          if text.count(old_ready) != 2:
+              raise SystemExit("Expected two obsolete ticking-area delay calls")
+          text = text.replace(old_ready, '''      tick: runtimeState.tickCounter,
+      reportError:''')
+
+          replace_once(
+              "getLotSizeInfoFromMarker(heldItem)",
+              "getLotSizeInfoFromMarker(getHeldItemTypeId(player))",
+              "lot preview held item"
+          )
+
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Increment pack version
+        id: version
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          bp_path = Path("src/behavior_pack/manifest.json")
+          rp_path = Path("src/resource_pack/manifest.json")
+          bp = json.loads(bp_path.read_text(encoding="utf-8"))
+          rp = json.loads(rp_path.read_text(encoding="utf-8"))
+          current = bp["header"]["version"]
+          if current != rp["header"]["version"]:
+              raise SystemExit(f"BP/RP version mismatch: {current} vs {rp['header']['version']}")
+          next_version = [current[0], current[1], current[2] + 1]
+          for manifest, linked_uuid in ((bp, rp["header"]["uuid"]), (rp, bp["header"]["uuid"])):
+              manifest["header"]["version"] = next_version
+              manifest["header"]["description"] = f"Township v{'.'.join(map(str, next_version))} stable Script API update"
+              for module in manifest.get("modules", []):
+                  module["version"] = next_version
+              for dependency in manifest.get("dependencies", []):
+                  if dependency.get("uuid") == linked_uuid:
+                      dependency["version"] = next_version
+          bp_path.write_text(json.dumps(bp, indent=2) + "\n", encoding="utf-8")
+          rp_path.write_text(json.dumps(rp, indent=2) + "\n", encoding="utf-8")
+          version = ".".join(map(str, next_version))
+          filename = "Township_v" + "_".join(map(str, next_version)) + ".mcaddon"
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as out:
+              out.write(f"version={version}\n")
+              out.write(f"filename={filename}\n")
+          PY
+
+      - name: Check script syntax
+        run: |
+          while IFS= read -r -d '' file; do
+            node --input-type=module --check < "$file"
+          done < <(find src/behavior_pack/scripts -type f -name '*.js' -print0)
+
+      - name: Build mcaddon
+        run: |
+          rm -rf dist staging
+          mkdir -p "staging/Township BP" "staging/Township RP" dist
+          cp -a src/behavior_pack/. "staging/Township BP/"
+          cp -a src/resource_pack/. "staging/Township RP/"
+          (
+            cd staging
+            zip -qr "../dist/${{ steps.version.outputs.filename }}" "Township BP" "Township RP"
+          )
+
+      - name: Upload mcaddon
+        uses: actions/upload-artifact@v4
+        with:
+          name: Township-v${{ steps.version.outputs.version }}
+          path: dist/${{ steps.version.outputs.filename }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Commit process hardening and remove this workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-township-process-hardening.yml
+          git add src/behavior_pack/scripts/app/runtime.js src/behavior_pack/scripts/systems/ticking_areas.js src/behavior_pack/manifest.json src/resource_pack/manifest.json
+          git commit -m "Harden Township processes for v${{ steps.version.outputs.version }}"
+          git push origin HEAD:main
