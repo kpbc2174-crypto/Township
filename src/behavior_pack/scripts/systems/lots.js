@@ -39,75 +39,128 @@ export function createLotSystem({
     return undefined;
   }
 
-  function registerLotMarkerFromBlock(block, player) {
-    try {
-      if (!block || !isLotMarkerType(block.typeId)) return;
-      const location = block.location;
-      const dimensionId = block.dimension.id;
+  function validateLotPlacement(block, player, options = {}) {
+    const {
+      label = "Lot Marker",
+      requireRoadClearance = false,
+      lotOverlapsAnyRoadReserve
+    } = options;
 
-      if (getLotAtBlock(location, dimensionId)) return;
+    if (!block) return undefined;
+    const location = block.location;
+    const dimensionId = block.dimension.id;
+    if (getLotAtBlock(location, dimensionId)) return undefined;
 
-      const town = findTownContainingLocation(location, dimensionId);
-      if (!town) {
-        clearBlock(block);
-        messagePlayer(player, "§cTownship Lot Marker rejected: place it inside the township radius.");
-        return;
-      }
-
-      const placementFacing = getPlacementFacing(player);
-      const lotSizeInfo = getLotSizeInfoFromMarker(block.typeId);
-      const newLotBounds = getFrontMarkerLotBounds(location, placementFacing.backDirection, lotSizeInfo.halfSize, lotSizeInfo.size - 1);
-
-      if (boundsOverlapOrTooClose(newLotBounds, getCenteredBounds(town.center, LOT_SMALL_HALF), LOT_BUFFER)) {
-        clearBlock(block);
-        messagePlayer(player, "§cTownship Lot Marker rejected: too close to the town center lot.");
-        return;
-      }
-
-      if (boundsOverlapInnerWallReserve(town, newLotBounds)) {
-        clearBlock(block);
-        messagePlayer(player, "§cTownship Lot Marker rejected: reserved inner-wall upgrade corridor.");
-        return;
-      }
-
-      for (const lot of getLots(town)) {
-        const existingBounds = getLotBounds(lot);
-        if (existingBounds && boundsOverlapOrTooClose(newLotBounds, existingBounds, LOT_BUFFER)) {
-          clearBlock(block);
-          messagePlayer(player, "§cTownship Lot Marker rejected: too close to another township lot.");
-          return;
-        }
-      }
-
-      const lotId = `${town.id}_lot_${getLots(town).length + 1}`;
-      const lot = {
-        id: lotId,
-        sizeName: lotSizeInfo.sizeName,
-        size: lotSizeInfo.size,
-        halfSize: lotSizeInfo.halfSize,
-        markerTypeId: block.typeId,
-        anchorMode: "front",
-        frontDirection: placementFacing.frontDirection,
-        backDirection: placementFacing.backDirection,
-        marker: { x: location.x, y: location.y, z: location.z },
-        buildingType: "empty",
-        buildingLevel: 0,
-        roadStatus: ROAD_STATUS_NOT_CONNECTED,
-        assignedVillager: "none",
-        locked: false,
-        status: LOT_STATUS_REGISTERED,
-        prepPhase: "not_started"
-      };
-
-      getLots(town).push(lot);
-      queueLotPrep(town, lot);
-      saveTowns(getTowns());
-      messagePlayer(player, `§aTownship ${lot.sizeName} registered. Lot ID: ${lot.id}`);
-      messagePlayer(player, "§eTownship Builder queued lot preparation.");
-    } catch (error) {
-      sendDebugLogError(addonName, "Register Lot Marker", error);
-      messagePlayer(player, "§cTownship error while registering lot. Check content log.");
+    const town = findTownContainingLocation(location, dimensionId);
+    if (!town) {
+      clearBlock(block);
+      messagePlayer(player, `§cTownship ${label} rejected: place it inside the township radius.`);
+      return undefined;
     }
+
+    const placementFacing = getPlacementFacing(player);
+    const lotSizeInfo = getLotSizeInfoFromMarker(block.typeId);
+    const bounds = getFrontMarkerLotBounds(location, placementFacing.backDirection, lotSizeInfo.halfSize, lotSizeInfo.size - 1);
+
+    if (boundsOverlapOrTooClose(bounds, getCenteredBounds(town.center, LOT_SMALL_HALF), LOT_BUFFER)) {
+      clearBlock(block);
+      messagePlayer(player, `§cTownship ${label} rejected: too close to the town center lot.`);
+      return undefined;
+    }
+
+    if (boundsOverlapInnerWallReserve(town, bounds)) {
+      clearBlock(block);
+      messagePlayer(player, `§cTownship ${label} rejected: reserved inner-wall upgrade corridor.`);
+      return undefined;
+    }
+
+    if (requireRoadClearance && typeof lotOverlapsAnyRoadReserve === "function" && lotOverlapsAnyRoadReserve(town, bounds)) {
+      clearBlock(block);
+      messagePlayer(player, `§cTownship ${label} rejected: too close to a protected road corridor.`);
+      return undefined;
+    }
+
+    for (const lot of getLots(town)) {
+      const existingBounds = getLotBounds(lot);
+      if (existingBounds && boundsOverlapOrTooClose(bounds, existingBounds, LOT_BUFFER)) {
+        clearBlock(block);
+        messagePlayer(player, `§cTownship ${label} rejected: too close to another township lot.`);
+        return undefined;
+      }
+    }
+
+    return { town, location, placementFacing, lotSizeInfo, bounds };
+  }
+
+  function createLotRecord(block, placement, overrides = {}) {
+    const { town, location, placementFacing, lotSizeInfo } = placement;
+    const prefix = overrides.idPrefix ?? "lot";
+    const lot = {
+      id: `${town.id}_${prefix}_${getLots(town).length + 1}`,
+      sizeName: lotSizeInfo.sizeName,
+      size: lotSizeInfo.size,
+      halfSize: lotSizeInfo.halfSize,
+      markerTypeId: block.typeId,
+      anchorMode: "front",
+      frontDirection: placementFacing.frontDirection,
+      backDirection: placementFacing.backDirection,
+      marker: { x: location.x, y: location.y, z: location.z },
+      buildingType: "empty",
+      buildingLevel: 0,
+      roadStatus: ROAD_STATUS_NOT_CONNECTED,
+      assignedVillager: "none",
+      locked: false,
+      status: LOT_STATUS_REGISTERED,
+      prepPhase: "not_started",
+      ...overrides
+    };
+    delete lot.idPrefix;
+    return lot;
+  }
+
+  function registerLotFromBlock(block, player, options = {}) {
+    const {
+      label = "Lot Marker",
+      isValidType = isLotMarkerType,
+      requireRoadClearance = false,
+      lotOverlapsAnyRoadReserve,
+      recordOverrides,
+      successMessage,
+      followUpMessage,
+      errorSystem = "Register Lot Marker"
+    } = options;
+
+    try {
+      if (!block || !isValidType(block.typeId)) return undefined;
+      const placement = validateLotPlacement(block, player, { label, requireRoadClearance, lotOverlapsAnyRoadReserve });
+      if (!placement) return undefined;
+
+      const resolvedOverrides = typeof recordOverrides === "function"
+        ? recordOverrides(placement)
+        : (recordOverrides ?? {});
+      const lot = createLotRecord(block, placement, resolvedOverrides);
+      getLots(placement.town).push(lot);
+      queueLotPrep(placement.town, lot);
+      saveTowns(getTowns());
+
+      messagePlayer(player, successMessage ?? `§aTownship ${lot.sizeName} registered. Lot ID: ${lot.id}`);
+      if (followUpMessage) messagePlayer(player, followUpMessage);
+      return { town: placement.town, lot };
+    } catch (error) {
+      sendDebugLogError(addonName, errorSystem, error);
+      messagePlayer(player, `§cTownship error while registering ${label.toLowerCase()}. Check content log.`);
+      return undefined;
+    }
+  }
+
+  function registerLotMarkerFromBlock(block, player) {
+    return registerLotFromBlock(block, player, {
+      label: "Lot Marker",
+      isValidType: isLotMarkerType,
+      successMessage: undefined,
+      followUpMessage: "§eTownship Builder queued lot preparation.",
+      errorSystem: "Register Lot Marker"
+    });
   }
 
   function getLotStatusText(town, lot) {
@@ -174,6 +227,9 @@ export function createLotSystem({
 
   return {
     getLotAtBlock,
+    validateLotPlacement,
+    createLotRecord,
+    registerLotFromBlock,
     registerLotMarkerFromBlock,
     getLotStatusText,
     showLotStatusFromBlock,
