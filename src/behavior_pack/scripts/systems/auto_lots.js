@@ -16,6 +16,7 @@ export function createAutoLotSystem({
   getDimensionFromId,
   queueLotPrep,
   ensureTownAutomationDefaults,
+  isLotMarkerType,
   constants
 }) {
   const {
@@ -33,7 +34,9 @@ export function createAutoLotSystem({
     LOT_STATUS_READY,
     LOT_STATUS_BUILDING,
     LOT_STATUS_OCCUPIED,
+    ROAD_STATUS_NOT_CONNECTED,
     ROAD_STATUS_CONNECTED,
+    CAMP_JOB_STATUS_COMPLETE,
     AUTO_PLACE_INTERVAL_TICKS,
     AUTO_PLACE_MAX_SMALL,
     AUTO_PLACE_MAX_MEDIUM,
@@ -52,16 +55,7 @@ export function createAutoLotSystem({
 
   function expandBounds(bounds, amount) {
     if (!bounds) return undefined;
-    return {
-      minX: bounds.minX - amount,
-      maxX: bounds.maxX + amount,
-      minZ: bounds.minZ - amount,
-      maxZ: bounds.maxZ + amount
-    };
-  }
-
-  function pointInsideBounds(x, z, bounds) {
-    return !!bounds && x >= bounds.minX && x <= bounds.maxX && z >= bounds.minZ && z <= bounds.maxZ;
+    return { minX: bounds.minX - amount, maxX: bounds.maxX + amount, minZ: bounds.minZ - amount, maxZ: bounds.maxZ + amount };
   }
 
   function countLotsBySizeName(town, sizeName) {
@@ -75,15 +69,15 @@ export function createAutoLotSystem({
     return dz > 0 ? "south" : "north";
   }
 
+  function getAutoLotPlanForType(typeId) {
+    const info = getLotSizeInfoFromMarker(typeId);
+    return { typeId, ...info, max: info.size === LOT_SMALL_SIZE ? AUTO_PLACE_MAX_SMALL : (info.size === LOT_MEDIUM_SIZE ? AUTO_PLACE_MAX_MEDIUM : AUTO_PLACE_MAX_LARGE) };
+  }
+
   function lotBoundsInsideBuildRadius(town, bounds) {
     if (!town || !bounds) return false;
     const radius = town.buildRadius ?? STARTING_BUILD_RADIUS;
-    const points = [
-      { x: bounds.minX, z: bounds.minZ },
-      { x: bounds.minX, z: bounds.maxZ },
-      { x: bounds.maxX, z: bounds.minZ },
-      { x: bounds.maxX, z: bounds.maxZ }
-    ];
+    const points = [{ x: bounds.minX, z: bounds.minZ }, { x: bounds.minX, z: bounds.maxZ }, { x: bounds.maxX, z: bounds.minZ }, { x: bounds.maxX, z: bounds.maxZ }];
     return points.every(point => distance2D({ x: point.x, z: point.z }, town.center) <= radius - 2);
   }
 
@@ -103,12 +97,8 @@ export function createAutoLotSystem({
       if (!town || !bounds) return false;
       const dimension = getDimensionFromId(town.dimensionId);
       const y = Math.floor((town.center?.y ?? 0) - 1);
-      const minX = bounds.minX - reserve;
-      const maxX = bounds.maxX + reserve;
-      const minZ = bounds.minZ - reserve;
-      const maxZ = bounds.maxZ + reserve;
-      for (let x = minX; x <= maxX; x++) {
-        for (let z = minZ; z <= maxZ; z++) {
+      for (let x = bounds.minX - reserve; x <= bounds.maxX + reserve; x++) {
+        for (let z = bounds.minZ - reserve; z <= bounds.maxZ + reserve; z++) {
           const block = dimension.getBlock({ x, y, z });
           if (block && block.typeId === DIRT_ROAD_ID) return true;
         }
@@ -128,9 +118,7 @@ export function createAutoLotSystem({
 
   function hasActiveAutoConstruction(town) {
     if (!town) return true;
-    const jobs = getJobs(town);
-    const activeJob = jobs.some(job => job && job.status !== "complete" && job.type !== "rebuild_boundary" && job.type !== "town_prep");
-    if (activeJob) return true;
+    if (getJobs(town).some(job => job && job.status !== "complete" && job.type !== "rebuild_boundary" && job.type !== "town_prep")) return true;
     return getLots(town).some(lot => {
       if (!lot || lot.isBuildLotRecorder) return false;
       if (lot.status === LOT_STATUS_REGISTERED || lot.status === LOT_STATUS_QUEUED || lot.status === LOT_STATUS_PREPARING || lot.status === LOT_STATUS_READY || lot.status === LOT_STATUS_BUILDING) return true;
@@ -140,8 +128,7 @@ export function createAutoLotSystem({
 
   function canAutoPlaceLotAt(town, marker, info, frontDirection) {
     if (!town || !marker || !info) return false;
-    const backDirection = oppositeDirection(frontDirection);
-    const bounds = getFrontMarkerLotBounds(marker, backDirection, info.halfSize, info.size - 1);
+    const bounds = getFrontMarkerLotBounds(marker, oppositeDirection(frontDirection), info.halfSize, info.size - 1);
     if (!lotBoundsInsideBuildRadius(town, bounds)) return false;
     if (boundsOverlapInnerWallReserve(town, bounds)) return false;
     if (lotOverlapsAnyRoadReserve(town, bounds)) return false;
@@ -155,34 +142,22 @@ export function createAutoLotSystem({
 
   function getNearestLotDistance(town, marker) {
     let best = distance2D(marker, town.center ?? marker);
-    for (const lot of getLots(town)) {
-      if (!lot?.marker) continue;
-      best = Math.min(best, distance2D(marker, lot.marker));
-    }
+    for (const lot of getLots(town)) if (lot?.marker) best = Math.min(best, distance2D(marker, lot.marker));
     return best;
   }
 
   function scanNearestRoadDirection(town, marker, maxDistance = AUTO_PLACE_ROAD_SCAN_DISTANCE) {
     try {
       const dimension = getDimensionFromId(town.dimensionId);
-      const directions = [
-        { name: "north", dx: 0, dz: -1 },
-        { name: "south", dx: 0, dz: 1 },
-        { name: "west", dx: -1, dz: 0 },
-        { name: "east", dx: 1, dz: 0 }
-      ];
+      const directions = [{ name: "north", dx: 0, dz: -1 }, { name: "south", dx: 0, dz: 1 }, { name: "west", dx: -1, dz: 0 }, { name: "east", dx: 1, dz: 0 }];
       let best;
-      for (const direction of directions) {
-        for (let distance = 1; distance <= maxDistance; distance++) {
-          for (let side = -2; side <= 2; side++) {
-            const x = marker.x + direction.dx * distance + (direction.dz !== 0 ? side : 0);
-            const z = marker.z + direction.dz * distance + (direction.dx !== 0 ? side : 0);
-            const block = dimension.getBlock({ x, y: marker.y - 1, z });
-            if (block && block.typeId === DIRT_ROAD_ID) {
-              const score = distance + Math.abs(side) * 0.25;
-              if (!best || score < best.distance) best = { direction: direction.name, distance: score };
-            }
-          }
+      for (const direction of directions) for (let distance = 1; distance <= maxDistance; distance++) for (let side = -2; side <= 2; side++) {
+        const x = marker.x + direction.dx * distance + (direction.dz !== 0 ? side : 0);
+        const z = marker.z + direction.dz * distance + (direction.dx !== 0 ? side : 0);
+        const block = dimension.getBlock({ x, y: marker.y - 1, z });
+        if (block && block.typeId === DIRT_ROAD_ID) {
+          const score = distance + Math.abs(side) * 0.25;
+          if (!best || score < best.distance) best = { direction: direction.name, distance: score };
         }
       }
       return best;
@@ -195,21 +170,15 @@ export function createAutoLotSystem({
   function scoreAutoLotCandidate(town, marker, info, frontDirection, seedOffset = 0, roadOverride = undefined) {
     const center = town.center;
     const distanceFromCenter = distance2D(marker, center);
-    const innerLimit = TOWN_BOUNDARY_RADIUS - INNER_WALL_RESERVE_HALF_WIDTH - info.halfSize - LOT_BUFFER;
-    const insideInner = distanceFromCenter <= innerLimit;
+    const insideInner = distanceFromCenter <= TOWN_BOUNDARY_RADIUS - INNER_WALL_RESERVE_HALF_WIDTH - info.halfSize - LOT_BUFFER;
     const nearestLot = getNearestLotDistance(town, marker);
     const road = roadOverride ?? scanNearestRoadDirection(town, marker, AUTO_PLACE_ROAD_SCAN_DISTANCE);
-    let score = 0;
-    score += insideInner ? -8000 : 8000;
-    score += nearestLot * 18;
-    score += distanceFromCenter * 0.65;
+    let score = (insideInner ? -8000 : 8000) + nearestLot * 18 + distanceFromCenter * 0.65;
     if (road) {
       score -= 1400;
       score += road.distance * 20;
       if (frontDirection === road.direction) score -= 700;
-    } else if (frontDirection === directionTowardCenter(marker, center)) {
-      score -= 250;
-    }
+    } else if (frontDirection === directionTowardCenter(marker, center)) score -= 250;
     score += Math.abs(((marker.x * 31 + marker.z * 17 + seedOffset) % 23));
     return score;
   }
@@ -217,31 +186,26 @@ export function createAutoLotSystem({
   function findAutoLotMarkerLocation(town, info, seedOffset = 0) {
     const center = town.center;
     if (!center) return undefined;
-    const baseY = Math.floor(center.y);
     const candidates = [];
     for (const radius of AUTO_PLACE_RINGS) {
       for (let x = -radius; x <= radius; x += AUTO_PLACE_SEARCH_STEP) {
-        candidates.push({ x: Math.floor(center.x) + x, y: baseY, z: Math.floor(center.z) - radius });
-        candidates.push({ x: Math.floor(center.x) + x, y: baseY, z: Math.floor(center.z) + radius });
+        candidates.push({ x: Math.floor(center.x) + x, y: Math.floor(center.y), z: Math.floor(center.z) - radius });
+        candidates.push({ x: Math.floor(center.x) + x, y: Math.floor(center.y), z: Math.floor(center.z) + radius });
       }
       for (let z = -radius + AUTO_PLACE_SEARCH_STEP; z <= radius - AUTO_PLACE_SEARCH_STEP; z += AUTO_PLACE_SEARCH_STEP) {
-        candidates.push({ x: Math.floor(center.x) - radius, y: baseY, z: Math.floor(center.z) + z });
-        candidates.push({ x: Math.floor(center.x) + radius, y: baseY, z: Math.floor(center.z) + z });
+        candidates.push({ x: Math.floor(center.x) - radius, y: Math.floor(center.y), z: Math.floor(center.z) + z });
+        candidates.push({ x: Math.floor(center.x) + radius, y: Math.floor(center.y), z: Math.floor(center.z) + z });
       }
     }
-
     let best;
     const directions = ["north", "south", "east", "west"];
-    let checkedCandidates = 0;
+    let checked = 0;
     for (const marker of candidates) {
-      checkedCandidates++;
-      if (checkedCandidates > AUTO_PLACE_MAX_CANDIDATES_PER_SEARCH) break;
+      if (++checked > AUTO_PLACE_MAX_CANDIDATES_PER_SEARCH) break;
       const road = scanNearestRoadDirection(town, marker, AUTO_PLACE_ROAD_SCAN_DISTANCE);
       const towardCenter = directionTowardCenter(marker, center);
-      const preferredDirections = road
-        ? [road.direction, ...directions.filter(direction => direction !== road.direction)]
-        : [towardCenter, ...directions.filter(direction => direction !== towardCenter)];
-      for (const frontDirection of preferredDirections) {
+      const preferred = road ? [road.direction, ...directions.filter(direction => direction !== road.direction)] : [towardCenter, ...directions.filter(direction => direction !== towardCenter)];
+      for (const frontDirection of preferred) {
         if (!canAutoPlaceLotAt(town, marker, info, frontDirection)) continue;
         const score = scoreAutoLotCandidate(town, marker, info, frontDirection, seedOffset, road);
         if (!best || score < best.score) best = { marker, frontDirection, backDirection: oppositeDirection(frontDirection), score };
@@ -257,8 +221,7 @@ export function createAutoLotSystem({
       if (!found) return false;
       const dimension = getDimensionFromId(town.dimensionId);
       const block = dimension.getBlock(found.marker);
-      if (!block) return false;
-      if (block.typeId !== "minecraft:air") return false;
+      if (!block || (block.typeId !== "minecraft:air" && !isLotMarkerType(block.typeId))) return false;
       block.setType(typeId);
       const lot = {
         id: `${town.id}_lot_${getLots(town).length + 1}`,
@@ -272,7 +235,7 @@ export function createAutoLotSystem({
         marker: { x: found.marker.x, y: found.marker.y, z: found.marker.z },
         buildingType: "empty",
         buildingLevel: 0,
-        roadStatus: "not_connected",
+        roadStatus: ROAD_STATUS_NOT_CONNECTED,
         assignedVillager: "none",
         locked: false,
         status: LOT_STATUS_REGISTERED,
@@ -294,13 +257,12 @@ export function createAutoLotSystem({
       ensureTownAutomationDefaults(town);
       if (!town || town.autoPlaceLots !== true || town.builderPaused === true) return 0;
       if ((town.townPrepStatus ?? "") !== "complete") return 0;
-      if (town.campStatus !== "starter_camp_complete") return 0;
+      if (town.campStatus !== CAMP_JOB_STATUS_COMPLETE) return 0;
       if (!force && runtimeState.tickCounter < (town.nextAutoPlaceTick ?? 0)) return 0;
       if (hasActiveAutoConstruction(town)) {
         town.nextAutoPlaceTick = runtimeState.tickCounter + AUTO_PLACE_INTERVAL_TICKS;
         return 0;
       }
-
       const plans = [
         { typeId: LARGE_LOT_MARKER_ID, max: town.maxLargeLots ?? AUTO_PLACE_MAX_LARGE, sizeName: "Large Lot" },
         { typeId: MEDIUM_LOT_MARKER_ID, max: town.maxMediumLots ?? AUTO_PLACE_MAX_MEDIUM, sizeName: "Medium Lot" },
@@ -321,10 +283,5 @@ export function createAutoLotSystem({
     }
   }
 
-  return {
-    lotOverlapsAnyRoadReserve,
-    runAutoLotPlacement,
-    createAutoLot,
-    findAutoLotMarkerLocation
-  };
+  return { getAutoLotPlanForType, lotOverlapsAnyRoadReserve, runAutoLotPlacement, createAutoLot, findAutoLotMarkerLocation };
 }
