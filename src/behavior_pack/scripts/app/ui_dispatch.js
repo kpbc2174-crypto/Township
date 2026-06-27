@@ -1,8 +1,6 @@
 export function createTownshipUiDispatch({
   addonName,
-  world,
   system,
-  runtimeState,
   sendDebugLogError,
   isLotMarkerType,
   isBuildLotRecorderType,
@@ -14,36 +12,6 @@ export function createTownshipUiDispatch({
   constants
 }) {
   const { FOUNDING_STONE_ID, GROUND_LEVELER_ID, BUILD_RECORDER_ID } = constants;
-  const lastSneakState = new Map();
-  const STATUS_SNEAK_RADIUS = 3;
-
-  function findNearestTownshipStatusBlockNearPlayer(player, radius = STATUS_SNEAK_RADIUS) {
-    try {
-      if (!player || !player.location || !player.dimension) return undefined;
-      const px = Math.floor(player.location.x);
-      const py = Math.floor(player.location.y);
-      const pz = Math.floor(player.location.z);
-      let bestBlock;
-      let bestDistance = 999999;
-      for (let dx = -radius; dx <= radius; dx++) {
-        for (let dy = -1; dy <= 2; dy++) {
-          for (let dz = -radius; dz <= radius; dz++) {
-            const block = player.dimension.getBlock({ x: px + dx, y: py + dy, z: pz + dz });
-            if (!block || (block.typeId !== FOUNDING_STONE_ID && !isLotMarkerType(block.typeId) && !isBuildLotRecorderType(block.typeId) && block.typeId !== GROUND_LEVELER_ID && block.typeId !== BUILD_RECORDER_ID)) continue;
-            const distance = Math.abs(dx) + Math.abs(dy) + Math.abs(dz);
-            if (distance < bestDistance) {
-              bestDistance = distance;
-              bestBlock = block;
-            }
-          }
-        }
-      }
-      return bestBlock;
-    } catch (error) {
-      sendDebugLogError(addonName, "Find Nearby Township Status Block", error);
-      return undefined;
-    }
-  }
 
   function openTownshipBlockUiFromBlock(block, player) {
     try {
@@ -55,22 +23,6 @@ export function createTownshipUiDispatch({
       else if (block.typeId === BUILD_RECORDER_ID) showBuildRecorderMenu(block, player);
     } catch (error) {
       sendDebugLogError(addonName, "Open Township Block UI", error);
-    }
-  }
-
-  function processSneakStatusChecks() {
-    try {
-      for (const player of world.getPlayers()) {
-        const key = player.id;
-        const nowSneaking = !!player.isSneaking;
-        const wasSneaking = !!lastSneakState.get(key);
-        lastSneakState.set(key, nowSneaking);
-        if (!nowSneaking || wasSneaking) continue;
-        const block = findNearestTownshipStatusBlockNearPlayer(player);
-        if (block) system.run(() => openTownshipBlockUiFromBlock(block, player));
-      }
-    } catch (error) {
-      sendDebugLogError(addonName, "Process Sneak Status Checks", error);
     }
   }
 
@@ -96,5 +48,5 @@ export function createTownshipUiDispatch({
     }
   }
 
-  return { findNearestTownshipStatusBlockNearPlayer, openTownshipBlockUiFromBlock, processSneakStatusChecks, registerTownshipBlockComponents };
+  return { openTownshipBlockUiFromBlock, registerTownshipBlockComponents };
 }
