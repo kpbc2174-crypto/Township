@@ -1,13 +1,22 @@
 export function createTownOperationsSystem({ addonName, runtimeState, townTag, sendSystemMessage, sendDebugLogError, getLots, getJobs, getDimensionFromId, getTownPrepPhasePlan, ensureFoundingStoneBlock, blockAlreadyMatches, safeSetBlock, queueStarterCamp, constants }) {
-  const { FOUNDING_STONE_ID, TOWN_PREP_INTERVAL_TICKS, TOWN_PREP_BLOCKS_PER_STEP, TOWN_PREP_QUADRANTS } = constants;
+  const {
+    FOUNDING_STONE_ID,
+    TOWN_PREP_INTERVAL_TICKS,
+    TOWN_PREP_BLOCKS_PER_STEP,
+    TOWN_PREP_QUADRANTS,
+    LOT_STATUS_READY,
+    LOT_STATUS_OCCUPIED,
+    ROAD_STATUS_CONNECTED
+  } = constants;
 
   function queueReadyLotsForAutoBuild(town, queueSmallHouseBuild) {
     if (!town || typeof queueSmallHouseBuild !== "function") return 0;
     let count = 0;
     for (const lot of getLots(town)) {
-      const empty = !lot?.buildingType || lot.buildingType === "empty";
-      if (!lot || lot.isBuildLotRecorder) continue;
-      if (lot.status === "ready" && empty) {
+      if (!lot) continue;
+      const empty = !lot.buildingType || lot.buildingType === "empty";
+      if (lot.isBuildLotRecorder) continue;
+      if (lot.status === LOT_STATUS_READY && empty) {
         queueSmallHouseBuild(town, lot, false);
         count++;
       }
@@ -19,7 +28,8 @@ export function createTownOperationsSystem({ addonName, runtimeState, townTag, s
     if (!town || typeof queueRoadToTown !== "function") return 0;
     let count = 0;
     for (const lot of getLots(town)) {
-      if (lot?.status === "occupied" && lot.roadStatus !== "connected") {
+      if (!lot) continue;
+      if (lot.status === LOT_STATUS_OCCUPIED && lot.roadStatus !== ROAD_STATUS_CONNECTED) {
         queueRoadToTown(town, lot, false);
         count++;
       }
@@ -67,7 +77,9 @@ export function createTownOperationsSystem({ addonName, runtimeState, townTag, s
         if (safeSetBlock(dimension, plan[index])) {
           index++;
           worked++;
-        } else break;
+        } else {
+          break;
+        }
       }
       job.nextIndex = index;
       job.nextTick = runtimeState.tickCounter + TOWN_PREP_INTERVAL_TICKS;
