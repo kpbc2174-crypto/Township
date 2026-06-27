@@ -47,7 +47,7 @@ export function createGroundLevelerSystem({
   function cleanupLotsInsideGroundLeveler(town, dimension, job) {
     try {
       if (!town || !job?.location) return;
-      const loc = job.location;
+      const location = job.location;
       const protectedCenter = town.center ? expandBounds(getCenteredBounds(town.center, 10), 0) : undefined;
       const removedIds = new Set();
       const remaining = [];
@@ -57,7 +57,7 @@ export function createGroundLevelerSystem({
           remaining.push(lot);
           continue;
         }
-        const insideRange = Math.abs(marker.x - loc.x) <= GROUND_LEVELER_HALF && Math.abs(marker.z - loc.z) <= GROUND_LEVELER_HALF;
+        const insideRange = Math.abs(marker.x - location.x) <= GROUND_LEVELER_HALF && Math.abs(marker.z - location.z) <= GROUND_LEVELER_HALF;
         const protectedMain = protectedCenter && pointInsideBounds(marker.x, marker.z, protectedCenter);
         if (insideRange && !protectedMain) {
           removedIds.add(lot.id);
@@ -103,7 +103,7 @@ export function createGroundLevelerSystem({
     }
 
     for (let dx = -GROUND_LEVELER_HALF; dx <= GROUND_LEVELER_HALF; dx++) {
-      for (let dz = -GROUND_LEVELER_HALF; dz <= GOUND_LEVELER_HALF; dz++) {
+      for (let dz = -GROUND_LEVELER_HALF; dz <= GROUND_LEVELER_HALF; dz++) {
         const x = x0 + dx;
         const z = z0 + dz;
         if (protectedCenter && pointInsideBounds(x, z, protectedCenter)) continue;
@@ -112,7 +112,6 @@ export function createGroundLevelerSystem({
         plan.push({ phase: "level_ground_leveler", x, y: y0 - 1, z, typeId: "minecraft:dirt" });
       }
     }
-
     return plan;
   }
 
@@ -154,7 +153,6 @@ export function createGroundLevelerSystem({
       const plan = getGroundLevelerPlan(town, job);
       let index = typeof job.nextIndex === "number" ? job.nextIndex : 0;
       while (index < plan.length && blockAlreadyMatches(dimension, plan[index])) index++;
-
       if (index >= plan.length) {
         finishGroundLevelerJob(dimension, job);
         return true;
@@ -164,14 +162,12 @@ export function createGroundLevelerSystem({
       while (index < plan.length && worked < GROUND_LEVELER_BLOCKS_PER_STEP) {
         while (index < plan.length && blockAlreadyMatches(dimension, plan[index])) index++;
         if (index >= plan.length) break;
-
         const entry = plan[index];
         const phase = entry.phase ?? "ground_leveler";
         if (job.lastPhase !== phase) {
           job.lastPhase = phase;
           sendSystemMessage(`§eTownship Builder is ${getGroundLevelerPhaseLabel(phase)}.`);
         }
-
         if (safeSetBlock(dimension, entry)) {
           index++;
           worked++;
