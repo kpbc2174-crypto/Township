@@ -4,20 +4,27 @@ export function createBuildRecorderForms({ addonName, sendDebugLogError, message
   function showBuildRecorderMenu(block, player) {
     try {
       if (!block || !isBuildRecorderType(block.typeId)) return;
-      const form = new ActionFormData().title("Township Build Recorder").body("Build behind this recorder, then capture the lot.").button("Save Small Lot").button("Save Medium Lot").button("Save Large Lot").button("Preview Small Area").button("Preview Medium Area").button("Preview Large Area").button("Export Build Data").button("Clear Capture");
+      const form = new ActionFormData()
+        .title("Township Build Recorder")
+        .body("Build by hand behind this recorder, then capture the lot. Export the saved data for conversion into a Township building template.")
+        .button("Save Small Lot")
+        .button("Save Medium Lot")
+        .button("Save Large Lot")
+        .button("Preview Small Area")
+        .button("Preview Medium Area")
+        .button("Preview Large Area")
+        .button("Export Build Data")
+        .button("Clear Saved Capture");
       form.show(player).then(response => {
         if (response.canceled) return;
-        const actions = [
-          () => captureBuildRecorderLot(block, player, "small"),
-          () => captureBuildRecorderLot(block, player, "medium"),
-          () => captureBuildRecorderLot(block, player, "large"),
-          () => previewBuildRecorderArea(block, player, "small"),
-          () => previewBuildRecorderArea(block, player, "medium"),
-          () => previewBuildRecorderArea(block, player, "large"),
-          () => exportLastBuildRecorderCapture(player),
-          () => clearBuildRecorderCaptures(player)
-        ];
-        actions[response.selection]?.();
+        if (response.selection === 0) captureBuildRecorderLot(block, player, "small");
+        else if (response.selection === 1) captureBuildRecorderLot(block, player, "medium");
+        else if (response.selection === 2) captureBuildRecorderLot(block, player, "large");
+        else if (response.selection === 3) previewBuildRecorderArea(block, player, "small");
+        else if (response.selection === 4) previewBuildRecorderArea(block, player, "medium");
+        else if (response.selection === 5) previewBuildRecorderArea(block, player, "large");
+        else if (response.selection === 6) exportLastBuildRecorderCapture(player);
+        else if (response.selection === 7) clearBuildRecorderCaptures(player);
       }).catch(error => sendDebugLogError(addonName, "Build Recorder UI", error));
     } catch (error) {
       sendDebugLogError(addonName, "Show Build Recorder Menu", error);
