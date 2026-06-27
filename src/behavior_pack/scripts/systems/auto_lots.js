@@ -283,5 +283,5 @@ export function createAutoLotSystem({
     }
   }
 
-  return { getAutoLotPlanForType, lotOverlapsAnyRoadReserve, runAutoLotPlacement, createAutoLot, findAutoLotMarkerLocation };
+  return { boundsOverlapInnerWallReserve, getAutoLotPlanForType, lotOverlapsAnyRoadReserve, runAutoLotPlacement, createAutoLot, findAutoLotMarkerLocation };
 }
