@@ -23,7 +23,6 @@ export function registerTownshipEvents({
   openTownshipBlockUiFromBlock,
   processTowns,
   processLotBorderPreview,
-  processSneakStatusChecks,
   constants
 }) {
   const { FOUNDING_STONE_ID, GROUND_LEVELER_ID, BUILD_RECORDER_ID } = constants;
@@ -110,6 +109,5 @@ export function registerTownshipEvents({
     runtimeState.tickCounter += 5;
     processTowns();
     processLotBorderPreview();
-    processSneakStatusChecks();
   }, 5);
 }
