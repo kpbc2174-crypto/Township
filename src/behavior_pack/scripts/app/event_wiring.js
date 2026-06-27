@@ -20,29 +20,12 @@ export function registerTownshipEvents({
   registerBuildRecorderFromBlock,
   cleanupTownAt,
   cleanupLotAt,
-  openTownshipBlockUiFromBlock,
   processTowns,
   processLotBorderPreview,
   constants
 }) {
   const { FOUNDING_STONE_ID, GROUND_LEVELER_ID, BUILD_RECORDER_ID } = constants;
   const announced = new Set();
-
-  function isTownshipUiBlock(typeId) {
-    return typeId === FOUNDING_STONE_ID || isLotMarkerType(typeId) || isBuildLotRecorderType(typeId) || typeId === GROUND_LEVELER_ID || typeId === BUILD_RECORDER_ID;
-  }
-
-  try {
-    world.afterEvents.itemUseOn.subscribe(event => {
-      try {
-        if (event.block && event.source && isTownshipUiBlock(event.block.typeId)) system.run(() => openTownshipBlockUiFromBlock(event.block, event.source));
-      } catch (error) {
-        sendDebugLogError(addonName, "ItemUseOn UI Fallback", error);
-      }
-    });
-  } catch (error) {
-    sendDebugLogError(addonName, "Subscribe itemUseOn UI Fallback", error);
-  }
 
   try {
     world.afterEvents.playerPlaceBlock.subscribe(event => {
