@@ -2,12 +2,12 @@
   "format_version": 2,
   "header": {
     "name": "Township RP",
-    "description": "Township v1.0.89 stable Script API update",
+    "description": "Township v1.0.90 stable Script API update",
     "uuid": "6effc74f-a22d-46d5-95f2-778c00fdfb9b",
     "version": [
       1,
       0,
-      89
+      90
     ],
     "min_engine_version": [
       1,
@@ -23,7 +23,7 @@
       "version": [
         1,
         0,
-        89
+        90
       ]
     }
   ],
@@ -33,7 +33,7 @@
       "version": [
         1,
         0,
-        89
+        90
       ]
     }
   ]

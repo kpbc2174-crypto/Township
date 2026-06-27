@@ -2,12 +2,12 @@
   "format_version": 2,
   "header": {
     "name": "Township BP",
-    "description": "Township v1.0.89 stable Script API update",
+    "description": "Township v1.0.90 stable Script API update",
     "uuid": "efb55785-5680-46d8-b4c7-8f8a2cddf364",
     "version": [
       1,
       0,
-      89
+      90
     ],
     "min_engine_version": [
       1,
@@ -22,7 +22,7 @@
       "version": [
         1,
         0,
-        89
+        90
       ]
     },
     {
@@ -33,7 +33,7 @@
       "version": [
         1,
         0,
-        89
+        90
       ]
     }
   ],
@@ -43,7 +43,7 @@
       "version": [
         1,
         0,
-        89
+        90
       ]
     },
     {
