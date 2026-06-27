@@ -136,7 +136,6 @@ export function createBuildRecorderStore({
       const yBase = Math.floor(marker.y) - 1;
       const depth = lot.size - 1;
       const records = [];
-
       for (let lx = -lot.halfSize; lx <= lot.halfSize; lx++) {
         for (let lb = 0; lb <= depth; lb++) {
           const point = transformFromBackAnchor(marker, lot.backDirection, lx, lb);
@@ -150,7 +149,6 @@ export function createBuildRecorderStore({
           }
         }
       }
-
       const capture = {
         export_version: 1,
         capturedAt: Date.now(),
@@ -167,7 +165,6 @@ export function createBuildRecorderStore({
         block_count: records.length,
         blocks: records
       };
-
       const key = buildLotKey(marker, town.dimensionId);
       capture.key = key;
       const list = getRecorderList().filter(captureItem => captureItem && captureItem.key !== key);
@@ -256,7 +253,7 @@ export function createBuildRecorderStore({
         return;
       }
       const facing = getPlacementFacing(player);
-      messagePlayer(player, `§aTownship Build Recorder placed. Front: ${facing.frontDirection}. Crouch near it or tap it to open capture options.`);
+      messagePlayer(player, `§aTownship Build Recorder placed. Front: ${facing.frontDirection}. Tap it to open capture options.`);
     } catch (error) {
       sendDebugLogError(addonName, "Register Build Recorder", error);
     }
@@ -289,16 +286,7 @@ export function createBuildRecorderStore({
           }
         }
       }
-      const capture = {
-        capturedAt: Date.now(),
-        building_id: `custom_${info.sizeName}_${safeLocationKey(marker)}`,
-        lot_size: info.sizeName,
-        lot_blocks: `${info.size}x${info.size}`,
-        front: facing.frontDirection,
-        back: facing.backDirection,
-        marker: { x: marker.x, y: marker.y, z: marker.z },
-        blocks: records
-      };
+      const capture = { capturedAt: Date.now(), building_id: `custom_${info.sizeName}_${safeLocationKey(marker)}`, lot_size: info.sizeName, lot_blocks: `${info.size}x${info.size}`, front: facing.frontDirection, back: facing.backDirection, marker: { x: marker.x, y: marker.y, z: marker.z }, blocks: records };
       const list = getRecorderList();
       list.push(capture);
       saveRecorderList(list);
@@ -321,9 +309,7 @@ export function createBuildRecorderStore({
       const chunkSize = 850;
       const total = Math.ceil(text.length / chunkSize);
       messagePlayer(player, `§6--- Township Build Recorder Export: ${capture.building_id} (${capture.blocks?.length ?? 0} blocks, ${total} chunks) ---`);
-      for (let index = 0; index < total; index++) {
-        messagePlayer(player, `§e[${index + 1}/${total}] §f${text.slice(index * chunkSize, (index + 1) * chunkSize)}`);
-      }
+      for (let index = 0; index < total; index++) messagePlayer(player, `§e[${index + 1}/${total}] §f${text.slice(index * chunkSize, (index + 1) * chunkSize)}`);
     } catch (error) {
       sendDebugLogError(addonName, "Export Build Recorder", error);
     }
@@ -334,19 +320,5 @@ export function createBuildRecorderStore({
     messagePlayer(player, "§eTownship Build Recorder captures cleared.");
   }
 
-  return {
-    getBuildLotByBlock,
-    ensureBuildLotSettings,
-    getBuildLotCaptureBox,
-    registerBuildRecorderFromBlock,
-    captureBuildLot,
-    exportBuildLot,
-    clearSavedBuildLotCapture,
-    getRecorderList,
-    saveRecorderList,
-    captureBuildRecorderLot,
-    exportLastBuildRecorderCapture,
-    clearBuildRecorderCaptures,
-    getRecorderLotInfo
-  };
+  return { getBuildLotByBlock, defaultBuildLotName, ensureBuildLotSettings, getBuildLotCaptureBox, registerBuildRecorderFromBlock, captureBuildLot, exportBuildLot, clearSavedBuildLotCapture, getRecorderList, saveRecorderList, captureBuildRecorderLot, exportLastBuildRecorderCapture, clearBuildRecorderCaptures, getRecorderLotInfo };
 }
