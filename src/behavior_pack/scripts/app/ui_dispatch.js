@@ -1,7 +1,7 @@
 export function createTownshipUiDispatch({
   addonName,
-  system,
   sendDebugLogError,
+  registerBlockInteractionComponents,
   isLotMarkerType,
   isBuildLotRecorderType,
   showTownStatusFromBlock,
@@ -27,25 +27,11 @@ export function createTownshipUiDispatch({
   }
 
   function registerTownshipBlockComponents(event) {
-    try {
-      const registry = event.blockComponentRegistry;
-      if (!registry) return;
-      const componentNames = [
-        "township:founding_stone_component",
-        "township:lot_marker_component",
-        "township:build_recorder_component",
-        "township:ground_leveler_component"
-      ];
-      for (const name of componentNames) {
-        registry.registerCustomComponent(name, {
-          onPlayerInteract(componentEvent) {
-            system.run(() => openTownshipBlockUiFromBlock(componentEvent.block, componentEvent.player));
-          }
-        });
-      }
-    } catch (error) {
-      sendDebugLogError(addonName, "Register Township Block Components", error);
-    }
+    registerBlockInteractionComponents(
+      event,
+      openTownshipBlockUiFromBlock,
+      (systemName, error) => sendDebugLogError(addonName, systemName, error)
+    );
   }
 
   return { openTownshipBlockUiFromBlock, registerTownshipBlockComponents };
