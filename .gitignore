@@ -6,6 +6,9 @@
 build/
 dist/
 
+# Generated from tracked Base64 texture sources during GitHub Actions
+src/resource_pack/**/*.png
+
 # OS files
 .DS_Store
 Thumbs.db
