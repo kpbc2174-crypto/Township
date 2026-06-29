@@ -15,6 +15,9 @@ jobs:
           ref: main
           persist-credentials: true
 
+      - name: Decode Base64 textures
+        run: python3 tools/decode_textures.py
+
       - name: Increment pack version
         id: version
         run: |
@@ -69,6 +72,7 @@ jobs:
           mkdir -p "staging/Township BP" "staging/Township RP" dist
           cp -a src/behavior_pack/. "staging/Township BP/"
           cp -a src/resource_pack/. "staging/Township RP/"
+          find staging -type f -name '*.png.b64' -delete
           (
             cd staging
             zip -qr "../dist/${{ steps.version.outputs.filename }}" "Township BP" "Township RP"
