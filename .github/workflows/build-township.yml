@@ -85,7 +85,7 @@ jobs:
           name: Township-v${{ steps.version.outputs.version }}
           path: dist/${{ steps.version.outputs.filename }}
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1
 
       - name: Commit version bump
         run: |
