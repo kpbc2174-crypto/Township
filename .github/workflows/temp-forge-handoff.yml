@@ -7,18 +7,15 @@ on:
       - '.github/temp-forge-handoff-request'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   handoff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Download Forge ZIP
+      - name: Verify Forge ZIP
         run: |
-          curl --fail --location --silent --show-error \
-            'https://tmpfiles.org/dl/1789244181.45a45e8b1b3271b4/wDwOPu0dAvCi/legacy-forge-phase1.zip' \
-            -o Legacy-Forge-Phase1.zip
           test -s Legacy-Forge-Phase1.zip
           python - <<'PY'
           import zipfile
@@ -29,10 +26,11 @@ jobs:
               assert any(n.endswith('-Signed.apk') for n in names), names
               print(names)
           PY
-      - name: Commit Forge ZIP
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f Legacy-Forge-Phase1.zip
-          git commit -m 'Correct temporary Forge ZIP handoff'
-          git push
+      - name: Upload Forge ZIP handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: legacy-forge-phase1-handoff
+          path: Legacy-Forge-Phase1.zip
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
