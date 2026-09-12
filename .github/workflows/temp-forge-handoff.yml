@@ -17,13 +17,22 @@ jobs:
       - name: Download Forge ZIP
         run: |
           curl --fail --location --silent --show-error \
-            'https://tmpfiles.org/dl/wDwOPu0dAvCi/legacy-forge-phase1.zip' \
+            'https://tmpfiles.org/dl/1789244181.45a45e8b1b3271b4/wDwOPu0dAvCi/legacy-forge-phase1.zip' \
             -o Legacy-Forge-Phase1.zip
           test -s Legacy-Forge-Phase1.zip
+          python - <<'PY'
+          import zipfile
+          p='Legacy-Forge-Phase1.zip'
+          assert zipfile.is_zipfile(p), 'handoff is not a ZIP'
+          with zipfile.ZipFile(p) as z:
+              names=z.namelist()
+              assert any(n.endswith('-Signed.apk') for n in names), names
+              print(names)
+          PY
       - name: Commit Forge ZIP
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f Legacy-Forge-Phase1.zip
-          git commit -m 'Temporary Forge ZIP handoff'
+          git commit -m 'Correct temporary Forge ZIP handoff'
           git push
